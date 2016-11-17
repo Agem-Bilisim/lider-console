@@ -15,7 +15,7 @@ node {
    // Mark the code build 'stage'....
    stage 'Build'
 
-   def mvnHome = tool 'M3'
+   def mvnHome = "/usr/share/maven/bin"
    def workspace = pwd()   
 
    // Generate third party dependencies
