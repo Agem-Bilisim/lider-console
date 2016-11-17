@@ -19,12 +19,12 @@ node {
    sh "cd ./lider-console-dependencies"
    sh "/usr/share/maven/bin/mvn clean p2:site"
    sh "/usr/share/maven/bin/mvn jetty:run &"
-   sh "J_PID=$!"
+   sh "J_PID=\$!"
    sh "cd ../"
    
    // Build project
    sh "/usr/share/maven/bin/mvn clean install -DskipTests"
-   sh "kill $J_PID"
+   sh "kill \$J_PID"
    
    // Invoke SonarQube
    sh "/usr/share/maven/bin/mvn clean verify sonar:sonar"
