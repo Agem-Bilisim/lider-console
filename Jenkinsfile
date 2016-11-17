@@ -21,7 +21,7 @@ node {
    // Generate third party dependencies
    sh "${mvnHome}/mvn -f ${workspace}/lider-console-dependencies/pom.xml clean p2:site"
    sh "/bin/bash ${mvnHome}/mvn -f ${workspace}/lider-console-dependencies/ jetty:run &"
-   sleep 20
+   sleep 60
    sh "${mvnHome}/mvn clean install -DskipTests"
    
    // Build project
