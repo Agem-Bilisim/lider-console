@@ -14,9 +14,13 @@ node {
 
    // Mark the code build 'stage'....
    stage 'Build'
-   
+
+   def mvnHome = tool 'M3'
+   def workspace = pwd()   
+
    // Generate third party dependencies
-   sh "cd ./lider-console-dependencies && /usr/share/maven/bin/mvn clean p2:site && /usr/share/maven/bin/mvn jetty:run & && J_PID=\$!"
+   sh "${mvnHome}/mvn -f ${workspace}/lider-console-dependencies/pom.xml clean p2:site"
+   sh "${mvnHome}/mvn -f ${workspace}/lider-console-dependencies/ jetty:run &"
    //sh "/usr/share/maven/bin/mvn clean p2:site"
    //sh "/usr/share/maven/bin/mvn jetty:run &"
    //sh "J_PID=\$!"
