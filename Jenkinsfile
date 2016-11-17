@@ -19,7 +19,7 @@ node {
    def workspace = pwd()   
 
    // Generate third party dependencies
-   sh "${mvnHome}/mvn -f ${workspace}/lider-console-dependencies/pom.xml clean p2:site"
+   bash "${mvnHome}/mvn -f ${workspace}/lider-console-dependencies/pom.xml clean p2:site"
    sh "${mvnHome}/mvn -f ${workspace}/lider-console-dependencies/ jetty:run & ; ${mvnHome}/mvn clean install -DskipTests"
    //sleep 20
    
