@@ -1,4 +1,5 @@
 #!groovy
+#!bin/bash
 
 node {
    // Mark the code checkout 'stage'....
