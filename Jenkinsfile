@@ -21,14 +21,15 @@ node {
    // Generate third party dependencies
    sh "${mvnHome}/mvn -f ${workspace}/lider-console-dependencies/pom.xml clean p2:site"
    sh "${mvnHome}/mvn -f ${workspace}/lider-console-dependencies/ jetty:run &"
+   sleep 20
    //sh "/usr/share/maven/bin/mvn clean p2:site"
    //sh "/usr/share/maven/bin/mvn jetty:run &"
    //sh "J_PID=\$!"
    //sh "cd ../"
    
    // Build project
-   sh "/usr/share/maven/bin/mvn clean install -DskipTests"
-   sh "kill \$J_PID"
+   sh "${mvnHome}/mvn clean install -DskipTests"
+   //sh "kill \$J_PID"
    
    // Invoke SonarQube
    sh "/usr/share/maven/bin/mvn clean verify sonar:sonar"
