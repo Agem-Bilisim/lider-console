@@ -2,13 +2,13 @@ package tr.org.liderahenk.liderconsole.core.model;
 
 import tr.org.liderahenk.liderconsole.core.i18n.Messages;
 
-public enum ReportExportType {
+public enum PdfReportParamType {
 
-	DISPLAY_TABLE(1), PDF_FILE(2)/*, HTML_FILE(3)*/;
+	PAGE_NO(1), DATE(2), TEXT(3);
 
 	private int id;
 
-	private ReportExportType(int id) {
+	private PdfReportParamType(int id) {
 		this.id = id;
 	}
 
@@ -21,16 +21,16 @@ public enum ReportExportType {
 	 * to EnumType.String and EnumType.Ordinal)
 	 * 
 	 * @param id
-	 * @return related ReportExportType enum
+	 * @return related PdfReportParamType enum
 	 * @see http://blog.chris-ritchie.com/2013/09/mapping-enums-with-fixed-id-in
 	 *      -jpa.html
 	 * 
 	 */
-	public static ReportExportType getType(Integer id) {
+	public static PdfReportParamType getType(Integer id) {
 		if (id == null) {
 			return null;
 		}
-		for (ReportExportType type : ReportExportType.values()) {
+		for (PdfReportParamType type : PdfReportParamType.values()) {
 			if (id.equals(type.getId())) {
 				return type;
 			}
