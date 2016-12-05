@@ -3,6 +3,7 @@ package tr.org.liderahenk.liderconsole.core.dialogs;
 import java.io.FileOutputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -11,9 +12,13 @@ import java.util.Set;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
@@ -26,11 +31,15 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import tr.org.liderahenk.liderconsole.core.constants.LiderConstants;
+import tr.org.liderahenk.liderconsole.core.contentproviders.IColumnContentProvider;
+import tr.org.liderahenk.liderconsole.core.contentproviders.ReportGenerationContentProvider;
 import tr.org.liderahenk.liderconsole.core.i18n.Messages;
 import tr.org.liderahenk.liderconsole.core.model.PdfReportParamType;
 import tr.org.liderahenk.liderconsole.core.model.ReportExportType;
@@ -344,6 +353,8 @@ public class ReportGenerationDialog extends DefaultLiderDialog {
 			createTableColumns(tableViewer, list);
 			// Populate table
 			tableViewer.setInput(list);
+			tableViewer.setContentProvider(new ReportGenerationContentProvider(selectedView.getViewColumns()));
+			addColumnListeners(tableViewer);
 			tableViewer.refresh();
 			// Redraw table
 			tableContainer.layout(true, true);
@@ -352,6 +363,39 @@ public class ReportGenerationDialog extends DefaultLiderDialog {
 			disposePrev(tableContainer);
 			Notifier.warning(null, Messages.getString("EMPTY_REPORT"));
 		}
+	}
+
+	private void addColumnListeners(final TableViewer tableViewer) {
+		TableColumn[] columns = tableViewer.getTable().getColumns();
+		for (int i = 0; i < columns.length; i++) {
+			columns[i].addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					TableColumn column = ((TableColumn) e.widget);
+					Table table = column.getParent();
+					if (column.equals(table.getSortColumn())) {
+						table.setSortDirection(table.getSortDirection() == SWT.UP ? SWT.DOWN : SWT.UP);
+					} else {
+						table.setSortColumn(column);
+						table.setSortDirection(SWT.UP);
+					}
+					tableViewer.refresh();
+				}
+			});
+		}
+		tableViewer.setComparator(new ViewerComparator() {
+			public int compare(Viewer viewer, Object e1, Object e2) {
+				IColumnContentProvider columnValueProvider = (IColumnContentProvider) tableViewer.getContentProvider();
+				Table table = tableViewer.getTable();
+				int index = Arrays.asList(table.getColumns()).indexOf(table.getSortColumn());
+				int result = 0;
+				if (index != -1) {
+					Comparable c1 = columnValueProvider.getValue(e1, index);
+					Comparable c2 = columnValueProvider.getValue(e2, index);
+					result = c1.compareTo(c2);
+				}
+				return table.getSortDirection() == SWT.UP ? result : -result;
+			}
+		});
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
