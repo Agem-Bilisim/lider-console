@@ -391,7 +391,7 @@ public class LdapSearchEditor extends EditorPart {
 				continue;
 			}
 			// return false if values of the same property do not match
-			if (!property.getPropertyValue().equalsIgnoreCase(propFilter.get(property.getPropertyName()))) {
+			if (!property.getPropertyValue().replaceAll("\\s", "").equalsIgnoreCase(propFilter.get(property.getPropertyName()))) {
 				return false;
 			}
 		}
