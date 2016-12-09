@@ -166,15 +166,19 @@ public class ReportViewDialog extends DefaultLiderDialog {
 
 		cmbType = new Combo(composite, SWT.BORDER | SWT.DROP_DOWN | SWT.READ_ONLY);
 		ReportType[] types = ReportType.values();
+		boolean selected = false;
 		for (int i = 0; i < types.length; i++) {
 			ReportType type = types[i];
 			cmbType.add(type.getMessage());
 			cmbType.setData(i + "", type);
 			if (selectedView != null && selectedView.getType() == type) {
 				cmbType.select(i);
+				selected = true;
 			}
 		}
-		cmbType.select(0);
+		if (!selected) {
+			cmbType.select(0);
+		}
 
 		// Alarm
 		Label lblAlarm = new Label(parent, SWT.NONE);

@@ -10,7 +10,8 @@ import tr.org.liderahenk.liderconsole.core.i18n.Messages;
  */
 public enum ReportType {
 
-	TABLE(1), PIE_CHART(2), BAR_CHART(3), LINE_CHART(4);
+	// TODO Could not find pie chart in SWTChart library at the moment...
+	TABLE(1), /*PIE_CHART(2),*/ BAR_CHART(3), LINE_CHART(4);
 
 	private int id;
 

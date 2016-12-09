@@ -786,6 +786,7 @@ Public License instead of this License.  But first, please read
       <plugin id="org.apache.xml.resolver"/>
       <plugin id="org.apache.xml.serializer"/>
       <plugin id="org.apache.xmlbeans"/>
+      <plugin id="org.bouncycastle.bcpkix"/>
       <plugin id="org.bouncycastle.bcprov"/>
       <plugin id="org.codehaus.jackson.core"/>
       <plugin id="org.codehaus.jackson.mapper"/>
@@ -1021,6 +1022,8 @@ Public License instead of this License.  But first, please read
       <plugin id="org.sat4j.pb"/>
       <plugin id="org.slf4j.api"/>
       <plugin id="org.slf4j.impl.log4j12" fragment="true"/>
+      <plugin id="org.swtchart"/>
+      <plugin id="org.swtchart.ext"/>
       <plugin id="org.tukaani.xz"/>
       <plugin id="org.w3c.css.sac"/>
       <plugin id="org.w3c.dom.events"/>

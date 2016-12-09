@@ -12,7 +12,6 @@ import java.util.Set;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -22,6 +21,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -36,6 +36,10 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.swtchart.Chart;
+import org.swtchart.IBarSeries;
+import org.swtchart.ILineSeries;
+import org.swtchart.ISeries.SeriesType;
 
 import tr.org.liderahenk.liderconsole.core.constants.LiderConstants;
 import tr.org.liderahenk.liderconsole.core.contentproviders.IColumnContentProvider;
@@ -43,9 +47,11 @@ import tr.org.liderahenk.liderconsole.core.contentproviders.ReportGenerationCont
 import tr.org.liderahenk.liderconsole.core.i18n.Messages;
 import tr.org.liderahenk.liderconsole.core.model.PdfReportParamType;
 import tr.org.liderahenk.liderconsole.core.model.ReportExportType;
+import tr.org.liderahenk.liderconsole.core.model.ReportType;
 import tr.org.liderahenk.liderconsole.core.model.ReportView;
 import tr.org.liderahenk.liderconsole.core.model.ReportViewColumn;
 import tr.org.liderahenk.liderconsole.core.model.ReportViewParameter;
+import tr.org.liderahenk.liderconsole.core.model.ViewColumnType;
 import tr.org.liderahenk.liderconsole.core.rest.requests.ReportGenerationRequest;
 import tr.org.liderahenk.liderconsole.core.rest.utils.ReportRestUtils;
 import tr.org.liderahenk.liderconsole.core.utils.SWTResourceManager;
@@ -60,7 +66,7 @@ public class ReportGenerationDialog extends DefaultLiderDialog {
 	// Widgets
 	private Combo cmbExportType;
 	private Composite paramContainer;
-	private Composite tableContainer;
+	private Composite resultContainer;
 	private Composite pdfContainer;
 	private Button btnGenerateReport;
 	private Label lblResult;
@@ -124,6 +130,8 @@ public class ReportGenerationDialog extends DefaultLiderDialog {
 			cmbExportType.setData(i + "", type);
 		}
 		cmbExportType.select(0);
+		// Disable if report type is a chart!
+		cmbExportType.setEnabled(selectedView.getType() == ReportType.TABLE);
 
 		// PDF parameters (header, footer, date etc.)
 		pdfContainer = new Composite(parent, SWT.BORDER);
@@ -336,20 +344,97 @@ public class ReportGenerationDialog extends DefaultLiderDialog {
 		lblResult.setText(Messages.getString("REPORT_RESULT"));
 		lblResult.setVisible(false);
 
-		tableContainer = new Composite(parent, SWT.NONE);
-		tableContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		tableContainer.setLayout(new GridLayout(2, false));
+		resultContainer = new Composite(parent, SWT.NONE);
+		resultContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		resultContainer.setLayout(new GridLayout(2, false));
 
 		applyDialogFont(parent);
 		return parent;
 	}
 
-	protected void generateTable(List<Object[]> list) {
+	protected void generateChart(List<Object[]> list) {
 		// Dispose previous table!
-		disposePrev(tableContainer);
+		disposePrev(resultContainer);
+		Composite comp = new Composite(resultContainer, SWT.NONE);
+		comp.setSize(500, 400);
+		comp.setLayout(new FillLayout());
 		if (list != null && !list.isEmpty()) {
 			lblResult.setVisible(true);
-			TableViewer tableViewer = SWTResourceManager.createTableViewer(tableContainer);
+			Chart chart = new Chart(comp, SWT.NONE);
+			chart.getTitle().setText(selectedView.getName());
+			//
+			// Bar chart
+			//
+			if (selectedView.getType() == ReportType.BAR_CHART) {
+				// Create legend & titles
+				String legend = null;
+				int labelIndex = 0, valueIndex = 0;
+				for (ReportViewColumn column : selectedView.getViewColumns()) {
+					if (column.getType() == ViewColumnType.LABEL_FIELD) {
+						chart.getAxisSet().getXAxis(0).getTitle().setText(column.getReferencedCol().getName());
+						legend = column.getLegend() != null && !column.getLegend().isEmpty() ? column.getLegend()
+								: "label";
+						labelIndex = column.getReferencedCol().getColumnOrder() - 1;
+					} else if (column.getType() == ViewColumnType.VALUE_FIELD) {
+						chart.getAxisSet().getYAxis(0).getTitle().setText(column.getReferencedCol().getName());
+						valueIndex = column.getReferencedCol().getColumnOrder() - 1;
+					}
+				}
+				String[] labels = new String[list.size()];
+				double[] values = new double[list.size()];
+				for (int i = 0; i < list.size(); i++) {
+					labels[i] = list.get(i)[labelIndex].toString();
+					values[i] = Double.parseDouble(list.get(i)[valueIndex].toString());
+				}
+				// Extract labels & values
+				chart.getAxisSet().getXAxis(0).enableCategory(true);
+				chart.getAxisSet().getXAxis(0).setCategorySeries(labels);
+
+				IBarSeries barSeries = (IBarSeries) chart.getSeriesSet().createSeries(SeriesType.BAR, legend);
+				barSeries.setYSeries(values);
+
+				chart.getAxisSet().adjustRange();
+			}
+			//
+			// Line chart
+			//
+			else if (selectedView.getType() == ReportType.LINE_CHART) {
+				// Create legend & titles
+				String legend = null;
+				int valueIndex = 0;
+				for (ReportViewColumn column : selectedView.getViewColumns()) {
+					if (column.getType() == ViewColumnType.LABEL_FIELD) {
+						chart.getAxisSet().getXAxis(0).getTitle().setText(column.getReferencedCol().getName());
+						legend = column.getLegend() != null && !column.getLegend().isEmpty() ? column.getLegend()
+								: "label";
+					} else if (column.getType() == ViewColumnType.VALUE_FIELD) {
+						chart.getAxisSet().getYAxis(0).getTitle().setText(column.getReferencedCol().getName());
+						valueIndex = column.getReferencedCol().getColumnOrder() - 1;
+					}
+				}
+
+				double[] values = new double[list.size()];
+				for (int i = 0; i < list.size(); i++) {
+					values[i] = Double.parseDouble(list.get(i)[valueIndex].toString());
+				}
+
+				ILineSeries lineSeries = (ILineSeries) chart.getSeriesSet().createSeries(SeriesType.LINE, legend);
+				lineSeries.setYSeries(values);
+
+				chart.getAxisSet().adjustRange();
+			}
+		} else {
+			lblResult.setVisible(false);
+			Notifier.warning(null, Messages.getString("EMPTY_REPORT"));
+		}
+	}
+
+	protected void generateTable(List<Object[]> list) {
+		// Dispose previous table!
+		disposePrev(resultContainer);
+		if (list != null && !list.isEmpty()) {
+			lblResult.setVisible(true);
+			TableViewer tableViewer = SWTResourceManager.createTableViewer(resultContainer);
 			createTableColumns(tableViewer, list);
 			// Populate table
 			tableViewer.setInput(list);
@@ -357,10 +442,9 @@ public class ReportGenerationDialog extends DefaultLiderDialog {
 			addColumnListeners(tableViewer);
 			tableViewer.refresh();
 			// Redraw table
-			tableContainer.layout(true, true);
+			resultContainer.layout(true, true);
 		} else {
 			lblResult.setVisible(false);
-			disposePrev(tableContainer);
 			Notifier.warning(null, Messages.getString("EMPTY_REPORT"));
 		}
 	}
@@ -383,6 +467,7 @@ public class ReportGenerationDialog extends DefaultLiderDialog {
 			});
 		}
 		tableViewer.setComparator(new ViewerComparator() {
+			@SuppressWarnings({ "rawtypes", "unchecked" })
 			public int compare(Viewer viewer, Object e1, Object e2) {
 				IColumnContentProvider columnValueProvider = (IColumnContentProvider) tableViewer.getContentProvider();
 				Table table = tableViewer.getTable();
@@ -539,7 +624,11 @@ public class ReportGenerationDialog extends DefaultLiderDialog {
 					ReportExportType type = (ReportExportType) getSelectedValue(cmbExportType);
 					if (type == ReportExportType.DISPLAY_TABLE) {
 						List<Object[]> list = ReportRestUtils.generateView(report);
-						generateTable(list);
+						if (selectedView.getType() == ReportType.TABLE) {
+							generateTable(list);
+						} else {
+							generateChart(list);
+						}
 					} else if (type == ReportExportType.PDF_FILE) {
 						byte[] pdf = ReportRestUtils.exportPdf(report);
 						if (pdf == null) {
@@ -586,6 +675,11 @@ public class ReportGenerationDialog extends DefaultLiderDialog {
 			return combo.getData(selectionIndex + "");
 		}
 		return null;
+	}
+
+	@Override
+	protected boolean isResizable() {
+		return false;
 	}
 
 }
