@@ -1,5 +1,6 @@
 language: java
 sudo: false
+install: true
 script: ./scripts/build-lider-console.sh
 notifications:
   email:
