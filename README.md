@@ -1,4 +1,4 @@
-# lider-console
+# lider-console [![Build Status](https://travis-ci.org/Agem-Bilisim/lider-console.svg?branch=master)](https://travis-ci.org/Agem-Bilisim/lider-console)
 
 **Lider Ahenk** is an open source project which provides solutions to manage, monitor and audit unlimited number of different systems and users on a network.
 
