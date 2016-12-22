@@ -250,9 +250,11 @@ public class LdapConnectionListener implements IConnectionListener {
 							// XMPP server.
 							LdapUtils.getInstance().getUidMap(conn, monitor);
 							try {
-								XMPPClient.getInstance().connect(UserSettings.USER_ID, UserSettings.USER_PASSWORD,
-										config.get("xmppServiceName").toString(), config.get("xmppHost").toString(),
-										new Integer(config.get("xmppPort").toString()));
+								if (!LdapUtils.getInstance().isAdmin(UserSettings.USER_DN)) {
+									XMPPClient.getInstance().connect(UserSettings.USER_ID, UserSettings.USER_PASSWORD,
+											config.get("xmppServiceName").toString(), config.get("xmppHost").toString(),
+											new Integer(config.get("xmppPort").toString()));
+								}
 								Notifier.success(null, Messages.getString("LIDER_CONNECTION_OPENED"));
 							} catch (Exception e) {
 								logger.error(e.getMessage(), e);
