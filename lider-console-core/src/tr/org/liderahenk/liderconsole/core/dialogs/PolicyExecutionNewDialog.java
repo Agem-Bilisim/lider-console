@@ -39,6 +39,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DateTime;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -57,6 +58,7 @@ import tr.org.liderahenk.liderconsole.core.rest.requests.PolicyRequest;
 import tr.org.liderahenk.liderconsole.core.rest.utils.PolicyRestUtils;
 import tr.org.liderahenk.liderconsole.core.rest.utils.ProfileRestUtils;
 import tr.org.liderahenk.liderconsole.core.utils.SWTResourceManager;
+import tr.org.liderahenk.liderconsole.core.widgets.LiderConfirmBox;
 import tr.org.liderahenk.liderconsole.core.widgets.Notifier;
 
 /**
@@ -309,21 +311,26 @@ public class PolicyExecutionNewDialog extends DefaultLiderDialog {
 		}
 
 		if (success) {
-			// Create execute-policy request
-			PolicyExecutionRequest policyExec = new PolicyExecutionRequest();
-			policyExec.setId(savedPolicy.getId());
-			policyExec.setDnType(getSelectedDnType());
-			policyExec.setDnList(new ArrayList<String>(this.dnSet));
-			policyExec.setActivationDate(btnEnableDate.getSelection()
-					? SWTResourceManager.convertDate(dtActivationDate, dtActivationDateTime) : null);
-			logger.debug("Policy request: {}", policy);
+			
+			if (LiderConfirmBox.open(Display.getDefault().getActiveShell(),
+					Messages.getString("APPLY_POLICY_TITLE"), Messages.getString("APPLY_POLICY_MESSAGE"), true)) {
+				// Create execute-policy request
+				PolicyExecutionRequest policyExec = new PolicyExecutionRequest();
+				policyExec.setId(savedPolicy.getId());
+				policyExec.setDnType(getSelectedDnType());
+				policyExec.setDnList(new ArrayList<String>(this.dnSet));
+				policyExec.setActivationDate(btnEnableDate.getSelection()
+						? SWTResourceManager.convertDate(dtActivationDate, dtActivationDateTime) : null);
+				logger.debug("Policy request: {}", policy);
 
-			try {
-				PolicyRestUtils.execute(policyExec);
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-				Notifier.error(null, Messages.getString("ERROR_ON_EXECUTE"));
+				try {
+					PolicyRestUtils.apply(policyExec);
+				} catch (Exception e) {
+					logger.error(e.getMessage(), e);
+					Notifier.error(null, Messages.getString("ERROR_ON_EXECUTE"));
+				}				
 			}
+
 		}
 
 		close();

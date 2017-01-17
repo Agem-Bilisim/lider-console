@@ -115,7 +115,7 @@ public class SearchGroupView extends ViewPart {
 				}
 				if (LiderConfirmBox.open(Display.getDefault().getActiveShell(),
 						Messages.getString("DELETE_SEARCH_GROUP_TITLE"),
-						Messages.getString("DELETE_SEARCH_GROUP_MESSAGE"))) {
+						Messages.getString("DELETE_SEARCH_GROUP_MESSAGE"), true)) {
 					try {
 						SearchGroupRestUtils.delete(getSelectedSearchGroup().getId());
 						refresh();

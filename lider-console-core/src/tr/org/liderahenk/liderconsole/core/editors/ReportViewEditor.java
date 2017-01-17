@@ -183,7 +183,7 @@ public class ReportViewEditor extends EditorPart {
 				try {
 					if (LiderConfirmBox.open(Display.getDefault().getActiveShell(),
 							Messages.getString("REPORT_VIEW_TITLE"),
-							Messages.getString("REPORT_VIEW_DELETE_MESSAGE"))) {
+							Messages.getString("REPORT_VIEW_DELETE_MESSAGE"), true)) {
 						ReportRestUtils.deleteView(getSelectedView().getId());
 						refresh();
 					}

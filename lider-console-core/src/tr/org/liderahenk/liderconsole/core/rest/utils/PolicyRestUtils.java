@@ -53,15 +53,15 @@ public class PolicyRestUtils {
 	private static final Logger logger = LoggerFactory.getLogger(PolicyRestUtils.class);
 
 	/**
-	 * Send POST request to server in order to execute policy (Policy does not
-	 * really executed at this step, it is just saved. The policies are actually
-	 * executed on related user login).
+	 * Send POST request to server in order to apply policy (Policy does not
+	 * really applied at this step, it is just saved. The policies are actually
+	 * applied on related user login).
 	 * 
 	 * @param policy
 	 * @return
 	 * @throws Exception
 	 */
-	public static boolean execute(PolicyExecutionRequest policy) throws Exception {
+	public static boolean apply(PolicyExecutionRequest policy) throws Exception {
 
 		// Build URL
 		StringBuilder url = getBaseUrl();

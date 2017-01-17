@@ -389,7 +389,7 @@ public class ExecutedTaskDialog extends DefaultLiderDialog {
 				public void widgetSelected(SelectionEvent e) {
 					if (LiderConfirmBox.open(Display.getDefault().getActiveShell(),
 							Messages.getString("FUTURE_TASK_CANCEL_TITLE"),
-							Messages.getString("FUTURE_TASK_CANCEL_MESSAGE"))) {
+							Messages.getString("FUTURE_TASK_CANCEL_MESSAGE"), true)) {
 						try {
 							TaskRestUtils.cancelTask(command.getTask().getId());
 						} catch (Exception e1) {
@@ -416,7 +416,7 @@ public class ExecutedTaskDialog extends DefaultLiderDialog {
 				public void widgetSelected(SelectionEvent e) {
 					if (LiderConfirmBox.open(Display.getDefault().getActiveShell(),
 							Messages.getString("SCHEDULED_TASK_CANCEL_TITLE"),
-							Messages.getString("SCHEDULED_TASK_CANCEL_MESSAGE"))) {
+							Messages.getString("SCHEDULED_TASK_CANCEL_MESSAGE"), true)) {
 						try {
 							TaskRestUtils.cancelTask(command.getTask().getId());
 						} catch (Exception e1) {
@@ -446,7 +446,7 @@ public class ExecutedTaskDialog extends DefaultLiderDialog {
 					}
 					if (LiderConfirmBox.open(Display.getDefault().getActiveShell(),
 							Messages.getString("SCHEDULED_TASK_RESCHEDULE_TITLE"),
-							Messages.getString("SCHEDULED_TASK_RESCHEDULE_MESSAGE"))) {
+							Messages.getString("SCHEDULED_TASK_RESCHEDULE_MESSAGE"), true)) {
 						try {
 							TaskRestUtils.rescheduleTask(command.getTask().getId(), dialog.getCronExpression());
 						} catch (Exception e1) {

@@ -184,7 +184,7 @@ public class ReportTemplateEditor extends EditorPart {
 				try {
 					if (LiderConfirmBox.open(Display.getDefault().getActiveShell(),
 							Messages.getString("REPORT_TEMPLATE_TITLE"),
-							Messages.getString("REPORT_TEMPLATE_DELETE_MESSAGE"))) {
+							Messages.getString("REPORT_TEMPLATE_DELETE_MESSAGE"), true)) {
 						ReportRestUtils.deleteTemplate(getSelectedTemplate().getId());
 						refresh();
 					}

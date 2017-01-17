@@ -73,7 +73,7 @@ public class AppliedPolicyDialog extends DefaultLiderDialog {
 	}
 
 	/**
-	 * Create executed task widgets
+	 * Create applied policy widgets
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {

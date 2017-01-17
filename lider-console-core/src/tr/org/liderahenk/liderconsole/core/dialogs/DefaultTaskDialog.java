@@ -266,7 +266,7 @@ public abstract class DefaultTaskDialog extends TitleAreaDialog {
 				// Validation of task data
 				if (validateTaskData()) {
 					if (LiderConfirmBox.open(Display.getDefault().getActiveShell(),
-							Messages.getString("TASK_EXEC_TITLE"), Messages.getString("TASK_EXEC_MESSAGE"))) {
+							Messages.getString("TASK_EXEC_TITLE"), Messages.getString("TASK_EXEC_MESSAGE"), true)) {
 						try {
 							progressBar.setVisible(true);
 							TaskRequest task = new TaskRequest(new ArrayList<String>(dnSet), DNType.AHENK,
@@ -310,7 +310,7 @@ public abstract class DefaultTaskDialog extends TitleAreaDialog {
 					}
 					if (LiderConfirmBox.open(Display.getDefault().getActiveShell(),
 							Messages.getString("TASK_EXEC_SCHEDULED_TITLE"),
-							Messages.getString("TASK_EXEC_SCHEDULED_MESSAGE"))) {
+							Messages.getString("TASK_EXEC_SCHEDULED_MESSAGE"), true)) {
 						try {
 							progressBar.setVisible(true);
 							TaskRequest task = new TaskRequest(new ArrayList<String>(dnSet), DNType.AHENK,
