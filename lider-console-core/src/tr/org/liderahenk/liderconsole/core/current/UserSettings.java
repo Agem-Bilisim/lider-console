@@ -30,20 +30,38 @@ public class UserSettings {
 	private UserSettings() {
 	}
 
-	public static String USER_DN = null;
-	public static String USER_PASSWORD = null;
-	public static String USER_ID = null;
+	private static String dn = null;
+	private static String password = null;
+	private static String uid = null;
 
-	public static void setCurrentUserDn(String userDn) {
-		USER_DN = userDn;
+	public static String getDn() {
+		return dn;
 	}
 
-	public static void setCurrentUserId(String userId) {
-		USER_ID = userId;
+	public static void setDn(String dn) {
+		UserSettings.dn = dn;
 	}
 
-	public static void setCurrentUserPassword(String password) {
-		USER_PASSWORD = password;
+	public static String getPassword() {
+		return password;
+	}
+
+	public static void setPassword(String password) {
+		UserSettings.password = password;
+	}
+
+	public static String getUid() {
+		return uid;
+	}
+
+	public static void setUid(String uid) {
+		UserSettings.uid = uid;
+	}
+
+	public static void reset() {
+		dn = null;
+		password = null;
+		uid = null;
 	}
 
 }

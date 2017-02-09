@@ -198,7 +198,7 @@ public class TreePaintListener implements Listener {
 	public void setXmppConnected(boolean xmppConnected) {
 		this.xmppConnected = xmppConnected;
 		if (xmppConnected) {
-			this.presenceMap.put(UserSettings.USER_DN, true);
+			this.presenceMap.put(UserSettings.getDn(), true);
 		}
 		this.redraw();
 	}

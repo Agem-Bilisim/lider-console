@@ -38,7 +38,7 @@ public class LiderPrivilegeHandler extends AbstractDialogStringValueEditor {
 
 	@Override
 	protected boolean openDialog(Shell arg0) {
-		if (!LdapUtils.getInstance().isAdmin(UserSettings.USER_DN)) {
+		if (!LdapUtils.getInstance().isAdmin(UserSettings.getDn())) {
 			Notifier.error(null, Messages.getString("NEED_ADMIN_PRIVILEGE"));
 			return false;
 		}

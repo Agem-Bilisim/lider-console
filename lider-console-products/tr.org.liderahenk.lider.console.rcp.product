@@ -1024,6 +1024,7 @@ Public License instead of this License.  But first, please read
       <plugin id="org.igniterealtime.smack.resolver-javax"/>
       <plugin id="org.igniterealtime.smack.sasl-javax"/>
       <plugin id="org.igniterealtime.smack.tcp"/>
+      <plugin id="org.jasypt"/>
       <plugin id="org.junit"/>
       <plugin id="org.jxmpp.core"/>
       <plugin id="org.jxmpp.util-cache"/>

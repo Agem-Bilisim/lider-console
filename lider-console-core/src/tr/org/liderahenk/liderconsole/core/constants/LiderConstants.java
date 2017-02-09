@@ -120,6 +120,7 @@ public class LiderConstants {
 		public static final String EXECUTED_TASKS_MAX_SIZE = "executed.tasks.max.size";
 		public static final String APPLIED_POLICIES_MAX_SIZE = "applied.policies.max.size";
 		public static final String DATE_FORMAT = "date.format";
+		public static final String ENCRYPTOR_PASS = "encryptor.pass";
 	}
 
 	/**

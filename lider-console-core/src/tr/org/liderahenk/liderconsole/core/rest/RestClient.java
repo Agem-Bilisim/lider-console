@@ -193,8 +193,8 @@ public class RestClient {
 			entity.setContentType(CONTENT_MIME_TYPE);
 			httpPost.setEntity(entity);
 
-			httpPost.setHeader(USERNAME_HEADER, UserSettings.USER_ID);
-			httpPost.setHeader(PASSWORD_HEADER, UserSettings.USER_PASSWORD);
+			httpPost.setHeader(USERNAME_HEADER, UserSettings.getUid());
+			httpPost.setHeader(PASSWORD_HEADER, UserSettings.getPassword());
 
 			httpResponse = (CloseableHttpResponse) httpClient.execute(httpPost);
 			if (httpResponse.getStatusLine().getStatusCode() != 200) {
@@ -279,8 +279,8 @@ public class RestClient {
 			httpGet.setHeader(CONTENT_TYPE_HEADER, CONTENT_MIME_TYPE);
 			httpGet.setHeader(ACCEPT_HEADER, ACCEPT_MIME_TYPE);
 
-			httpGet.setHeader(USERNAME_HEADER, UserSettings.USER_ID);
-			httpGet.setHeader(PASSWORD_HEADER, UserSettings.USER_PASSWORD);
+			httpGet.setHeader(USERNAME_HEADER, UserSettings.getUid());
+			httpGet.setHeader(PASSWORD_HEADER, UserSettings.getPassword());
 
 			httpResponse = (CloseableHttpResponse) httpClient.execute(httpGet);
 			if (httpResponse.getStatusLine().getStatusCode() != 200) {

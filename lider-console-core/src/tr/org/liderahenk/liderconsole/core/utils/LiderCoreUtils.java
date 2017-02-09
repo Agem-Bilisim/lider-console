@@ -21,12 +21,22 @@ package tr.org.liderahenk.liderconsole.core.utils;
 
 import java.text.SimpleDateFormat;
 
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+import org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig;
+
+import tr.org.liderahenk.liderconsole.core.config.ConfigProvider;
+import tr.org.liderahenk.liderconsole.core.constants.LiderConstants;
+
 /**
  * 
  * @author <a href="mailto:emre.akkaya@agem.com.tr">Emre Akkaya</a>
  *
  */
 public class LiderCoreUtils {
+
+	private static StandardPBEStringEncryptor enc;
+
+	private static final String ENCRYPTOR_ALGORITHM = "PBEWITHMD5ANDTRIPLEDES";
 
 	public static boolean isInteger(String s) {
 		if (s == null || s.isEmpty())
@@ -55,6 +65,32 @@ public class LiderCoreUtils {
 			return false;
 		}
 		return true;
+	}
+
+	public static String encrypt(String plain) {
+		initEncryptor();
+		return enc.encrypt(plain);
+	}
+
+	public static String decrypt(String encrypted) {
+		initEncryptor();
+		return enc.decrypt(encrypted);
+	}
+
+	public static boolean checkPassword(String inputPassword, String encryptedPassword) {
+		initEncryptor();
+		return enc.decrypt(encryptedPassword).equals(inputPassword);
+	}
+
+	private static void initEncryptor() {
+		if (enc == null) {
+			enc = new StandardPBEStringEncryptor();
+			EnvironmentStringPBEConfig env = new EnvironmentStringPBEConfig();
+			env.setAlgorithm(ENCRYPTOR_ALGORITHM);
+			env.setPassword(ConfigProvider.getInstance().get(LiderConstants.CONFIG.ENCRYPTOR_PASS));
+			enc.setConfig(env);
+			enc.initialize();
+		}
 	}
 
 }

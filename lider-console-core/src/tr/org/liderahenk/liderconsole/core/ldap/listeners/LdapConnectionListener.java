@@ -60,6 +60,7 @@ import tr.org.liderahenk.liderconsole.core.i18n.Messages;
 import tr.org.liderahenk.liderconsole.core.ldap.utils.LdapUtils;
 import tr.org.liderahenk.liderconsole.core.rest.responses.IResponse;
 import tr.org.liderahenk.liderconsole.core.rest.utils.TaskRestUtils;
+import tr.org.liderahenk.liderconsole.core.utils.LiderCoreUtils;
 import tr.org.liderahenk.liderconsole.core.widgets.Notifier;
 import tr.org.liderahenk.liderconsole.core.xmpp.XMPPClient;
 
@@ -153,8 +154,7 @@ public class LdapConnectionListener implements IConnectionListener {
 		XMPPClient.getInstance().disconnect();
 
 		RestSettings.setServerUrl(null);
-		UserSettings.setCurrentUserDn(null);
-		UserSettings.setCurrentUserPassword(null);
+		UserSettings.reset();
 
 		eventBroker.send("check_lider_status", null);
 
@@ -210,17 +210,17 @@ public class LdapConnectionListener implements IConnectionListener {
 				String uid = conn.getBindPrincipal();
 				String principal = LdapUtils.getInstance().findDnByUid(uid, conn, monitor);
 				String passwd = conn.getBindPassword();
-				UserSettings.setCurrentUserDn(principal);
-				UserSettings.setCurrentUserId(uid);
-				UserSettings.setCurrentUserPassword(passwd);
+				UserSettings.setDn(principal);
+				UserSettings.setUid(uid);
+				UserSettings.setPassword(LiderCoreUtils.encrypt(passwd));
 			} else {
 				String principal = conn.getBindPrincipal();
 				String uid = LdapUtils.getInstance().findAttributeValueByDn(principal,
 						ConfigProvider.getInstance().get(LiderConstants.CONFIG.USER_LDAP_UID_ATTR), conn, monitor);
 				String passwd = conn.getBindPassword();
-				UserSettings.setCurrentUserDn(principal);
-				UserSettings.setCurrentUserId(uid);
-				UserSettings.setCurrentUserPassword(passwd);
+				UserSettings.setDn(principal);
+				UserSettings.setUid(uid);
+				UserSettings.setPassword(LiderCoreUtils.encrypt(passwd));
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -228,7 +228,7 @@ public class LdapConnectionListener implements IConnectionListener {
 			return;
 		}
 
-		if ("".equals(UserSettings.USER_DN)) {
+		if ("".equals(UserSettings.getDn())) {
 			Notifier.error(null, Messages.getString("LDAP_USER_MISSING_UID_ERROR",
 					ConfigProvider.getInstance().get(LiderConstants.CONFIG.USER_LDAP_UID_ATTR)));
 			return;
@@ -269,8 +269,8 @@ public class LdapConnectionListener implements IConnectionListener {
 							// XMPP server.
 							LdapUtils.getInstance().getUidMap(conn, monitor);
 							try {
-								if (!LdapUtils.getInstance().isAdmin(UserSettings.USER_DN)) {
-									XMPPClient.getInstance().connect(UserSettings.USER_ID, UserSettings.USER_PASSWORD,
+								if (!LdapUtils.getInstance().isAdmin(UserSettings.getDn())) {
+									XMPPClient.getInstance().connect(UserSettings.getUid(), LiderCoreUtils.decrypt(UserSettings.getPassword()),
 											config.get("xmppServiceName").toString(), config.get("xmppHost").toString(),
 											new Integer(config.get("xmppPort").toString()));
 								}

@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Text;
 import tr.org.liderahenk.liderconsole.core.constants.LiderConstants;
 import tr.org.liderahenk.liderconsole.core.current.UserSettings;
 import tr.org.liderahenk.liderconsole.core.i18n.Messages;
+import tr.org.liderahenk.liderconsole.core.utils.LiderCoreUtils;
 import tr.org.liderahenk.liderconsole.core.utils.SWTResourceManager;
 
 /**
@@ -111,7 +112,7 @@ public class LiderConfirmBox extends MessageDialog {
 			return;
 		}
 		validPassword = txtPassword != null && txtPassword.getText() != null
-				&& txtPassword.getText().equals(UserSettings.USER_PASSWORD);
+				&& LiderCoreUtils.checkPassword(txtPassword.getText().trim(), UserSettings.getPassword());
 	}
 
 	public boolean isValidPassword() {
