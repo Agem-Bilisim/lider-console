@@ -101,6 +101,7 @@ public class LiderConstants {
 		public static final String REST_REPORT_BASE_URL = "rest.report.base.url";
 		public static final String REST_TASK_BASE_URL = "rest.task.base.url";
 		public static final String REST_SEARCH_GROUP_BASE_URL = "rest.search.group.base.url";
+		public static final String REST_CONFIG_BASE_URL = "rest.config.base.url";
 		public static final String REST_ALLOW_SELF_SIGNED_CERT = "rest.allow.self.signed.cert";
 		public static final String GUI_INITIAL_PERSPECTIVE_ID = "gui.initial.perspective.id";
 		public static final String XMPP_MAX_RETRY_CONN = "xmpp.max.retry.connection.count";

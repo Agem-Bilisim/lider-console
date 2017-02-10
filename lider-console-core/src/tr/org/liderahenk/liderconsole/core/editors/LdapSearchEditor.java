@@ -74,9 +74,9 @@ import tr.org.liderahenk.liderconsole.core.model.Agent;
 import tr.org.liderahenk.liderconsole.core.model.AgentProperty;
 import tr.org.liderahenk.liderconsole.core.model.SearchFilterEnum;
 import tr.org.liderahenk.liderconsole.core.model.SearchGroupEntry;
+import tr.org.liderahenk.liderconsole.core.rest.RestClient;
 import tr.org.liderahenk.liderconsole.core.rest.responses.IResponse;
 import tr.org.liderahenk.liderconsole.core.rest.utils.AgentRestUtils;
-import tr.org.liderahenk.liderconsole.core.rest.utils.TaskRestUtils;
 import tr.org.liderahenk.liderconsole.core.utils.SWTResourceManager;
 import tr.org.liderahenk.liderconsole.core.widgets.AttrNameCombo;
 import tr.org.liderahenk.liderconsole.core.widgets.AttrOperator;
@@ -410,7 +410,8 @@ public class LdapSearchEditor extends EditorPart {
 				continue;
 			}
 			// return false if values of the same property do not match
-			if (!property.getPropertyValue().replaceAll("\\s", "").equalsIgnoreCase(propFilter.get(property.getPropertyName()))) {
+			if (!property.getPropertyValue().replaceAll("\\s", "")
+					.equalsIgnoreCase(propFilter.get(property.getPropertyName()))) {
 				return false;
 			}
 		}
@@ -761,7 +762,7 @@ public class LdapSearchEditor extends EditorPart {
 	private void queryComboItems() {
 		try {
 			if (attributes == null || properties == null) {
-				IResponse response = TaskRestUtils.execute("LIDER-CORE", "1.0.0", "GET-LDAP-SEARCH-ATTR", false);
+				IResponse response = RestClient.get(getBaseUrl().append("/ldapconf").toString(), false);
 				// LDAP search attributes (such as uid, liderPrivilege)
 				attributes = (List<String>) response.getResultMap().get("attributes");
 				// Agent properties (such as hostname, ipAddresses, os)
@@ -801,6 +802,16 @@ public class LdapSearchEditor extends EditorPart {
 	public void dispose() {
 		getSite().setSelectionProvider(null);
 		super.dispose();
+	}
+
+	/**
+	 * 
+	 * @return base URL for config actions
+	 */
+	private static StringBuilder getBaseUrl() {
+		StringBuilder url = new StringBuilder(
+				ConfigProvider.getInstance().get(LiderConstants.CONFIG.REST_CONFIG_BASE_URL));
+		return url;
 	}
 
 }

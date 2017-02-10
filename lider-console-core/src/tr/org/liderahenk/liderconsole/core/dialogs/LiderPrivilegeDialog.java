@@ -45,12 +45,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import tr.org.liderahenk.liderconsole.core.config.ConfigProvider;
+import tr.org.liderahenk.liderconsole.core.constants.LiderConstants;
 import tr.org.liderahenk.liderconsole.core.i18n.Messages;
 import tr.org.liderahenk.liderconsole.core.ldap.listeners.LdapConnectionListener;
 import tr.org.liderahenk.liderconsole.core.ldap.utils.LdapUtils;
 import tr.org.liderahenk.liderconsole.core.model.LiderPrivilege;
+import tr.org.liderahenk.liderconsole.core.rest.RestClient;
 import tr.org.liderahenk.liderconsole.core.rest.responses.IResponse;
-import tr.org.liderahenk.liderconsole.core.rest.utils.TaskRestUtils;
 import tr.org.liderahenk.liderconsole.core.utils.SWTResourceManager;
 import tr.org.liderahenk.liderconsole.core.widgets.Notifier;
 import tr.org.liderahenk.liderconsole.core.widgets.PrivilegeCheckbox;
@@ -92,7 +94,7 @@ public class LiderPrivilegeDialog extends DefaultLiderDialog {
 
 		IResponse response = null;
 		try {
-			response = TaskRestUtils.execute("LIDER-CORE", "1.0.0", "GET-TASK-REPORT-CODES", false);
+			response = RestClient.get(getBaseUrl().append("/codes").toString(), false);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			Notifier.error(null, Messages.getString("CHECK_LIDER_STATUS_AND_REST_SERVICE"));
@@ -297,6 +299,16 @@ public class LiderPrivilegeDialog extends DefaultLiderDialog {
 	@Override
 	protected Point getInitialSize() {
 		return new Point(WIDTH_HINT, 600);
+	}
+
+	/**
+	 * 
+	 * @return base URL for config actions
+	 */
+	private static StringBuilder getBaseUrl() {
+		StringBuilder url = new StringBuilder(
+				ConfigProvider.getInstance().get(LiderConstants.CONFIG.REST_CONFIG_BASE_URL));
+		return url;
 	}
 
 }

@@ -67,6 +67,10 @@ public class LiderCoreUtils {
 		return true;
 	}
 
+	public static boolean isEmpty(final String s) {
+		return s == null || s.trim().isEmpty();
+	}
+
 	public static String encrypt(String plain) {
 		initEncryptor();
 		return enc.encrypt(plain);
