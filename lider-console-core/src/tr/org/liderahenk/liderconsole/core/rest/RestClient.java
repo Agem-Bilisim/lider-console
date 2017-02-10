@@ -36,6 +36,7 @@ import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -296,7 +297,11 @@ public class RestClient {
 					buffer.append(line);
 				}
 
-				response = new ObjectMapper().readValue(buffer.toString(), RestResponse.class);
+				try {
+					response = new ObjectMapper().readValue(buffer.toString(), RestResponse.class);
+				} catch (JsonParseException e) {
+					logger.error(e.getMessage(), e);
+				}
 			}
 
 			if (response != null) {

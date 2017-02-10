@@ -146,7 +146,12 @@ public class LdapConnectionListener implements IConnectionListener {
 
 	@Override
 	public void connectionClosed(Connection conn, StudioProgressMonitor mon) {
-		// TODO invalidate session on lider
+		try {
+			// Invalidate session on Lider
+			RestClient.get("lider/logout", false);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
 		LdapUtils.getInstance().destroy();
 		closeAllEditors();
 		XMPPClient.getInstance().disconnect();
