@@ -49,6 +49,19 @@ public class AttrNameCombo extends Combo {
 		return null;
 	}
 
+	/**
+	 * 
+	 * @param combo
+	 * @return selected value of this combo
+	 */
+	public String getSelectedValue() {
+		int selectionIndex = getSelectionIndex();
+		if (selectionIndex > -1 && getItem(selectionIndex) != null && getData(selectionIndex + "") != null) {
+			return getData(selectionIndex + "").toString().trim();
+		}
+		return getText().trim();
+	}
+
 	@Override
 	protected void checkSubclass() {
 		// By default, subclassing is not allowed for many of the SWT Controls

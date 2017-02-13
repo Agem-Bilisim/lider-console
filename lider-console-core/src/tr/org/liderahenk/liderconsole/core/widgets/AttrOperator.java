@@ -22,6 +22,8 @@ package tr.org.liderahenk.liderconsole.core.widgets;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 
+import tr.org.liderahenk.liderconsole.core.model.SearchFilterEnum;
+
 /**
  * @author Emre Akkaya <emre.akkaya@agem.com.tr>
  *
@@ -34,6 +36,19 @@ public class AttrOperator extends Combo {
 	 */
 	public AttrOperator(Composite parent, int style) {
 		super(parent, style);
+	}
+
+	/**
+	 * 
+	 * @param combo
+	 * @return selected value of this combo
+	 */
+	public String getSelectedValue() {
+		int selectionIndex = getSelectionIndex();
+		if (selectionIndex > -1 && getItem(selectionIndex) != null && getData(selectionIndex + "") != null) {
+			return ((SearchFilterEnum) getData(selectionIndex + "")).getOperator();
+		}
+		return SearchFilterEnum.EQ.getOperator();
 	}
 
 	@Override

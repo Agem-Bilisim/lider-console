@@ -19,7 +19,9 @@
 */
 package tr.org.liderahenk.liderconsole.core.utils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig;
@@ -67,6 +69,15 @@ public class LiderCoreUtils {
 		return true;
 	}
 
+	public static boolean isDouble(String s) {
+		try {
+			Double.parseDouble(s);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
+	}
+
 	public static boolean isEmpty(final String s) {
 		return s == null || s.trim().isEmpty();
 	}
@@ -95,6 +106,58 @@ public class LiderCoreUtils {
 			enc.setConfig(env);
 			enc.initialize();
 		}
+	}
+
+	public static boolean isGreaterThanOrEquals(String thiz, String that) {
+		String dateFormat = ConfigProvider.getInstance().get(LiderConstants.CONFIG.DATE_FORMAT);
+		if ((isEmpty(thiz) && isEmpty(that)) || (thiz != null && thiz.equals(that))) {
+			return true;
+		} else if (isInteger(thiz) && isInteger(that)) {
+			int thisInt = Integer.parseInt(thiz);
+			int thatInt = Integer.parseInt(that);
+			return thisInt >= thatInt;
+		} else if (isValidDate(thiz, dateFormat) && isValidDate(that, dateFormat)) {
+			SimpleDateFormat format = new SimpleDateFormat(dateFormat);
+			try {
+				Date thisDate = format.parse(thiz);
+				Date thatDate = format.parse(that);
+				return thisDate.compareTo(thatDate) >= 0;
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		} else if (isDouble(thiz) && isDouble(that)) {
+			double thisDouble = Double.parseDouble(thiz);
+			double thatDouble = Double.parseDouble(that);
+			return thisDouble >= thatDouble;
+		}
+		// Simply compare strings
+		return thiz.compareTo(that) >= 0;
+	}
+
+	public static boolean isLessThanOrEquals(String thiz, String that) {
+		String dateFormat = ConfigProvider.getInstance().get(LiderConstants.CONFIG.DATE_FORMAT);
+		if ((isEmpty(thiz) && isEmpty(that)) || (thiz != null && thiz.equals(that))) {
+			return true;
+		} else if (isInteger(thiz) && isInteger(that)) {
+			int thisInt = Integer.parseInt(thiz);
+			int thatInt = Integer.parseInt(that);
+			return thisInt <= thatInt;
+		} else if (isValidDate(thiz, dateFormat) && isValidDate(that, dateFormat)) {
+			SimpleDateFormat format = new SimpleDateFormat(dateFormat);
+			try {
+				Date thisDate = format.parse(thiz);
+				Date thatDate = format.parse(that);
+				return thisDate.compareTo(thatDate) <= 0;
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		} else if (isDouble(thiz) && isDouble(that)) {
+			double thisDouble = Double.parseDouble(thiz);
+			double thatDouble = Double.parseDouble(that);
+			return thisDouble <= thatDouble;
+		}
+		// Simply compare strings
+		return thiz.compareTo(that) <= 0;
 	}
 
 }

@@ -77,6 +77,7 @@ import tr.org.liderahenk.liderconsole.core.model.SearchGroupEntry;
 import tr.org.liderahenk.liderconsole.core.rest.RestClient;
 import tr.org.liderahenk.liderconsole.core.rest.responses.IResponse;
 import tr.org.liderahenk.liderconsole.core.rest.utils.AgentRestUtils;
+import tr.org.liderahenk.liderconsole.core.utils.LiderCoreUtils;
 import tr.org.liderahenk.liderconsole.core.utils.SWTResourceManager;
 import tr.org.liderahenk.liderconsole.core.widgets.AttrNameCombo;
 import tr.org.liderahenk.liderconsole.core.widgets.AttrOperator;
@@ -310,7 +311,7 @@ public class LdapSearchEditor extends EditorPart {
 							if (isValidAttributeValue(gChild)
 									&& isValidAttribute(((AttrValueText) gChild).getRelatedAttrCombo())) {
 								AttrNameCombo rAttrCombo = ((AttrValueText) gChild).getRelatedAttrCombo();
-								criteria.put(rAttrCombo.getText(), ((AttrValueText) gChild).getText());
+								criteria.put(rAttrCombo.getSelectedValue(), ((AttrValueText) gChild).getText());
 							}
 						}
 					}
@@ -357,7 +358,7 @@ public class LdapSearchEditor extends EditorPart {
 							if (btnSearchAgents.getSelection()) {
 								// Then, filter these results by agent
 								// properties
-								Map<String, String> propFilter = buildPropertyMap();
+								Map<String, AgentPropValueOperatorPair> propFilter = buildPropertyMap();
 								if (propFilter != null && !propFilter.isEmpty()) {
 									// Read agents
 									queryAgents();
@@ -399,7 +400,7 @@ public class LdapSearchEditor extends EditorPart {
 		job.schedule();
 	}
 
-	private boolean hasProperties(Agent agent, Map<String, String> propFilter) {
+	private boolean hasProperties(Agent agent, Map<String, AgentPropValueOperatorPair> propFilter) {
 		if (agent == null || agent.getProperties() == null || agent.getProperties().isEmpty()) {
 			return false;
 		}
@@ -409,10 +410,29 @@ public class LdapSearchEditor extends EditorPart {
 				i++; // count # of skipped properties
 				continue;
 			}
-			// return false if values of the same property do not match
-			if (!property.getPropertyValue().replaceAll("\\s", "")
-					.equalsIgnoreCase(propFilter.get(property.getPropertyName()))) {
-				return false;
+			AgentPropValueOperatorPair valueOperatorPair = propFilter.get(property.getPropertyName());
+			String propValue = property.getPropertyValue().trim();
+			switch (SearchFilterEnum.getType(valueOperatorPair.getOperator())) {
+			case NOT_EQ:
+				if (propValue.equalsIgnoreCase(valueOperatorPair.getValue())) {
+					return false;
+				}
+				break;
+			case GTE:
+				if (!LiderCoreUtils.isGreaterThanOrEquals(propValue, valueOperatorPair.getValue())) {
+					return false;
+				}
+				break;
+			case LTE:
+				if (!LiderCoreUtils.isLessThanOrEquals(propValue, valueOperatorPair.getValue())) {
+					return false;
+				}
+			case EQ:
+			default:
+				if (!propValue.equalsIgnoreCase(valueOperatorPair.getValue())) {
+					return false;
+				}
+				break;
 			}
 		}
 		// return false if we have skipped all of the properties, otherwise true
@@ -430,11 +450,11 @@ public class LdapSearchEditor extends EditorPart {
 		return null;
 	}
 
-	private Map<String, String> buildPropertyMap() {
-		Map<String, String> propFilter = null;
+	private Map<String, AgentPropValueOperatorPair> buildPropertyMap() {
+		Map<String, AgentPropValueOperatorPair> propFilter = null;
 		Control[] children = cmpSearchCritera.getChildren();
 		if (children != null) {
-			propFilter = new HashMap<String, String>();
+			propFilter = new HashMap<String, AgentPropValueOperatorPair>();
 			for (Control child : children) {
 				if (child instanceof Group) {
 					Control[] gChildren = ((Group) child).getChildren();
@@ -443,8 +463,12 @@ public class LdapSearchEditor extends EditorPart {
 							if (isValidAttributeValue(gChild)
 									&& isValidAttribute(((AttrValueText) gChild).getRelatedAttrCombo())) {
 								AttrNameCombo rAttrCombo = ((AttrValueText) gChild).getRelatedAttrCombo();
-								if (properties.keySet().contains(rAttrCombo.getText())) {
-									propFilter.put(rAttrCombo.getText(), ((AttrValueText) gChild).getText());
+								if (properties.keySet().contains(rAttrCombo.getSelectedValue())) {
+									propFilter.put(rAttrCombo.getSelectedValue(),
+											new AgentPropValueOperatorPair(
+													((AttrValueText) gChild).getRelatedAttrOperator()
+															.getSelectedValue(),
+													((AttrValueText) gChild).getText().trim()));
 								}
 							}
 						}
@@ -595,11 +619,21 @@ public class LdapSearchEditor extends EditorPart {
 									&& isValidAttribute(((AttrValueText) gChild).getRelatedAttrCombo())) {
 								AttrNameCombo rAttrCombo = ((AttrValueText) gChild).getRelatedAttrCombo();
 								AttrOperator rAttrOperator = ((AttrValueText) gChild).getRelatedAttrOperator();
-								if (attributes.contains(rAttrCombo.getText())) {
+								if (attributes.contains(rAttrCombo.getSelectedValue())) {
 									StringBuilder expression = new StringBuilder();
-									expression.append("(").append(rAttrCombo.getText())
-											.append(rAttrOperator.getItem(rAttrOperator.getSelectionIndex()))
-											.append(((AttrValueText) gChild).getText()).append(")");
+									SearchFilterEnum operator = SearchFilterEnum
+											.getType(rAttrOperator.getSelectedValue());
+									if (operator == SearchFilterEnum.NOT_EQ) {
+										expression.append("(!(").append(rAttrCombo.getSelectedValue())
+												.append(SearchFilterEnum.EQ.getOperator())
+												.append(((AttrValueText) gChild).getText().trim().replaceAll("%", "*"))
+												.append("))");
+									} else {
+										expression.append("(").append(rAttrCombo.getSelectedValue())
+												.append(rAttrOperator.getSelectedValue())
+												.append(((AttrValueText) gChild).getText().trim().replaceAll("%", "*"))
+												.append(")");
+									}
 									filterExpressions.add(expression.toString());
 								}
 							}
@@ -635,8 +669,9 @@ public class LdapSearchEditor extends EditorPart {
 					if (gChildren != null) {
 						for (Control gChild : gChildren) {
 							// gChild must be an instance of AttrNameCombo
-							if (isValidAttribute(gChild) && attributes.contains(((AttrNameCombo) gChild).getText())) {
-								returningAttributes.add(((AttrNameCombo) gChild).getText());
+							if (isValidAttribute(gChild)
+									&& attributes.contains(((AttrNameCombo) gChild).getSelectedValue())) {
+								returningAttributes.add(((AttrNameCombo) gChild).getSelectedValue());
 							}
 						}
 					}
@@ -645,6 +680,27 @@ public class LdapSearchEditor extends EditorPart {
 		}
 
 		return returningAttributes.toArray(new String[] {});
+	}
+
+	public class AgentPropValueOperatorPair {
+
+		String operator;
+
+		String value;
+
+		public AgentPropValueOperatorPair(String operator, String value) {
+			this.operator = operator;
+			this.value = value;
+		}
+
+		public String getOperator() {
+			return operator;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
 	}
 
 	/**
@@ -699,17 +755,35 @@ public class LdapSearchEditor extends EditorPart {
 
 		cmbAttribute = new AttrNameCombo(grpSearchCriteria, SWT.BORDER | SWT.DROP_DOWN);
 		cmbAttribute.setToolTipText(Messages.getString("PROPERTY_NAME"));
-		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, false, false);
 		gridData.widthHint = 250;
 		cmbAttribute.setLayoutData(gridData);
-		cmbAttribute.setItems(generateComboItems());
+		// Populate attribute combo
+		int i = 0, j = 0;
+		if (attributes != null) {
+			for (; i < attributes.size(); i++) {
+				String i18n = Messages.getString(attributes.get(i));
+				cmbAttribute.add(!LiderCoreUtils.isEmpty(i18n) && !i18n.replaceAll("!", "").equals(attributes.get(i))
+						? i18n : attributes.get(i));
+				cmbAttribute.setData(i + "", attributes.get(i));
+			}
+		}
+		if (properties != null) {
+			String[] propertyNames = properties.keySet().toArray(new String[properties.keySet().size()]);
+			for (; j < propertyNames.length; j++) {
+				String i18n = Messages.getString(propertyNames[j]);
+				cmbAttribute.add(!LiderCoreUtils.isEmpty(i18n) && !i18n.replaceAll("!", "").equals(propertyNames[j])
+						? i18n : propertyNames[j]);
+				cmbAttribute.setData(i + j + "", propertyNames[j]);
+			}
+		}
 		cmbAttribute.select(0);
 		cmbAttribute.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				AttrNameCombo c = (AttrNameCombo) e.getSource();
-				if (properties != null && properties.get(c.getText()) != null) {
-					c.getRelatedAttrValue().setAutoCompleteProposals(properties.get(c.getText()).split(","));
+				if (properties != null && properties.get(c.getSelectedValue()) != null) {
+					c.getRelatedAttrValue().setAutoCompleteProposals(properties.get(c.getSelectedValue()).split(","));
 				}
 			}
 
@@ -719,23 +793,16 @@ public class LdapSearchEditor extends EditorPart {
 		});
 
 		cmbOperator = new AttrOperator(grpSearchCriteria, SWT.BORDER | SWT.DROP_DOWN | SWT.READ_ONLY);
-		cmbOperator.setItems(SearchFilterEnum.getOperators());
+		// Populate operator combo
+		for (int k = 0; k < SearchFilterEnum.values().length; k++) {
+			cmbOperator.add(SearchFilterEnum.values()[k].getMessage());
+			cmbOperator.setData(k + "", SearchFilterEnum.values()[k]);
+		}
 		cmbOperator.select(0);
 
 		txtAttrValue = new AttrValueText(grpSearchCriteria, SWT.BORDER | SWT.DROP_DOWN);
-		txtAttrValue.setToolTipText(Messages.getString("PROPERTY_VALUE"));
+		txtAttrValue.setToolTipText(Messages.getString("PROPERTY_VALUE_DETAIL"));
 		txtAttrValue.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-	}
-
-	private String[] generateComboItems() {
-		List<String> items = new ArrayList<String>();
-		if (attributes != null) {
-			items.addAll(attributes);
-		}
-		if (properties != null) {
-			items.addAll(new ArrayList<String>(properties.keySet()));
-		}
-		return items.toArray(new String[items.size()]);
 	}
 
 	protected void handleRemoveGroupButton(SelectionEvent e) {

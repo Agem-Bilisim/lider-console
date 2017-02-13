@@ -19,9 +19,11 @@
 */
 package tr.org.liderahenk.liderconsole.core.model;
 
+import tr.org.liderahenk.liderconsole.core.i18n.Messages;
+
 public enum SearchFilterEnum {
 
-	EQ("="), NOT_EQ("!="), GT(">"), LT("<");
+	EQ("="), NOT_EQ("!="), GTE(">="), LTE("<=");
 
 	private String operator;
 
@@ -54,14 +56,14 @@ public enum SearchFilterEnum {
 		}
 		throw new IllegalArgumentException("No matching type for operator: " + operator);
 	}
-	
-	public static String[] getOperators() {
-		SearchFilterEnum[] values = SearchFilterEnum.values();
-		String[] operators = new String[values.length];
-		for (int i = 0; i < values.length; i++) {
-			operators[i] = values[i].getOperator();
-		}
-		return operators;
+
+	/**
+	 * Provide i18n message representation of the enum type.
+	 * 
+	 * @return
+	 */
+	public String getMessage() {
+		return Messages.getString(this.toString());
 	}
 
 }
