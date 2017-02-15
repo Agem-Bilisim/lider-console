@@ -208,7 +208,12 @@ public class Notifier {
 				if (mode == NotifierMode.SYSLOG_AND_POPUP || mode == NotifierMode.ONLY_POPUP) {
 					final Shell shell = createNotificationWindow(image, title, text,
 							NotifierColorsFactory.getColorsForTheme(theme));
-					makeShellAppears(shell);
+					String noNotifier = System.getProperty("no.notifier");
+					if ("1".equals(noNotifier)) {
+						writeToSysLog(title, text, description, theme);
+					} else {
+						makeShellAppears(shell);
+					}
 				}
 			}
 
