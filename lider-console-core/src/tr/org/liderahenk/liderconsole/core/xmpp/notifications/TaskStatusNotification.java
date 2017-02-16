@@ -44,7 +44,7 @@ public class TaskStatusNotification implements Serializable {
 
 	private String pluginVersion;
 
-	private String commandClsId;
+	private String taskCode;
 
 	private CommandExecution commandExecution;
 
@@ -55,11 +55,11 @@ public class TaskStatusNotification implements Serializable {
 	public TaskStatusNotification() {
 	}
 
-	public TaskStatusNotification(String pluginName, String pluginVersion, String commandClsId,
+	public TaskStatusNotification(String pluginName, String pluginVersion, String taskCode,
 			CommandExecution commandExecution, CommandExecutionResult result, Date timestamp) {
 		this.pluginName = pluginName;
 		this.pluginVersion = pluginVersion;
-		this.commandClsId = commandClsId;
+		this.taskCode = taskCode;
 		this.commandExecution = commandExecution;
 		this.result = result;
 		this.timestamp = timestamp;
@@ -89,12 +89,12 @@ public class TaskStatusNotification implements Serializable {
 		this.pluginVersion = pluginVersion;
 	}
 
-	public String getCommandClsId() {
-		return commandClsId;
+	public String getTaskCode() {
+		return taskCode;
 	}
 
-	public void setCommandClsId(String commandClsId) {
-		this.commandClsId = commandClsId;
+	public void setTaskCode(String taskCode) {
+		this.taskCode = taskCode;
 	}
 
 	public CommandExecution getCommandExecution() {

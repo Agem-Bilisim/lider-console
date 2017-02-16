@@ -42,7 +42,7 @@ public class ExecutedTask implements Serializable {
 
 	private String pluginVersion;
 
-	private String commandClsId;
+	private String taskCode;
 
 	private Date createDate;
 
@@ -80,12 +80,12 @@ public class ExecutedTask implements Serializable {
 		this.pluginVersion = pluginVersion;
 	}
 
-	public String getCommandClsId() {
-		return commandClsId;
+	public String getTaskCode() {
+		return taskCode;
 	}
 
-	public void setCommandClsId(String commandClsId) {
-		this.commandClsId = commandClsId;
+	public void setTaskCode(String taskCode) {
+		this.taskCode = taskCode;
 	}
 
 	public Date getCreateDate() {

@@ -109,12 +109,12 @@ public class TaskRestUtils {
 	 * 
 	 * @param pluginName
 	 * @param pluginVersion
-	 * @param commandId
+	 * @param taskCode
 	 * @return
 	 * @throws Exception
 	 */
-	public static IResponse execute(String pluginName, String pluginVersion, String commandId) throws Exception {
-		TaskRequest task = new TaskRequest(null, null, pluginName, pluginVersion, commandId, null, null, null,
+	public static IResponse execute(String pluginName, String pluginVersion, String taskCode) throws Exception {
+		TaskRequest task = new TaskRequest(null, null, pluginName, pluginVersion, taskCode, null, null, null,
 				new Date());
 		return execute(task);
 	}
@@ -124,14 +124,14 @@ public class TaskRestUtils {
 	 * 
 	 * @param pluginName
 	 * @param pluginVersion
-	 * @param commandId
+	 * @param taskCode
 	 * @param showNotification
 	 * @return
 	 * @throws Exception
 	 */
-	public static IResponse execute(String pluginName, String pluginVersion, String commandId, boolean showNotification)
+	public static IResponse execute(String pluginName, String pluginVersion, String taskCode, boolean showNotification)
 			throws Exception {
-		TaskRequest task = new TaskRequest(null, null, pluginName, pluginVersion, commandId, null, null, null,
+		TaskRequest task = new TaskRequest(null, null, pluginName, pluginVersion, taskCode, null, null, null,
 				new Date());
 		return execute(task, showNotification);
 	}

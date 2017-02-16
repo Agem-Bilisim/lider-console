@@ -28,6 +28,11 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import tr.org.liderahenk.liderconsole.core.ldap.enums.DNType;
 
+/**
+ * 
+ * @author <a href="mailto:emre.akkaya@agem.com.tr">Emre Akkaya</a>
+ *
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TaskRequest implements IRequest {
 
@@ -56,10 +61,10 @@ public class TaskRequest implements IRequest {
 	private String pluginVersion;
 
 	/**
-	 * Command ID is a unique value in the target plugin that is used to
-	 * distinguish an ICommand class from others.
+	 * Task code is a unique value in the target plugin that is used to
+	 * distinguish an ITaskHandler class from others.
 	 */
-	private String commandId;
+	private String taskCode;
 
 	/**
 	 * Custom parameter map that can be used by the plugin.
@@ -86,13 +91,13 @@ public class TaskRequest implements IRequest {
 	public TaskRequest() {
 	}
 
-	public TaskRequest(List<String> dnList, DNType dnType, String pluginName, String pluginVersion, String commandId,
+	public TaskRequest(List<String> dnList, DNType dnType, String pluginName, String pluginVersion, String taskCode,
 			Map<String, Object> parameterMap, String cronExpression, Date activationDate, Date timestamp) {
 		this.dnList = dnList;
 		this.dnType = dnType;
 		this.pluginName = pluginName;
 		this.pluginVersion = pluginVersion;
-		this.commandId = commandId;
+		this.taskCode = taskCode;
 		this.parameterMap = parameterMap;
 		this.cronExpression = cronExpression;
 		this.activationDate = activationDate;
@@ -131,12 +136,12 @@ public class TaskRequest implements IRequest {
 		this.pluginVersion = pluginVersion;
 	}
 
-	public String getCommandId() {
-		return commandId;
+	public String getTaskCode() {
+		return taskCode;
 	}
 
-	public void setCommandId(String commandId) {
-		this.commandId = commandId;
+	public void setTaskCode(String taskCode) {
+		this.taskCode = taskCode;
 	}
 
 	public Map<String, Object> getParameterMap() {

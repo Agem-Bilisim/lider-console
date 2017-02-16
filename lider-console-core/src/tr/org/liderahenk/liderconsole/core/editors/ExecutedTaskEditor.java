@@ -311,7 +311,7 @@ public class ExecutedTaskEditor extends EditorPart {
 			}
 			ExecutedTask task = (ExecutedTask) element;
 			if (task.getPluginName().matches(searchString) || task.getPluginVersion().matches(searchString)
-					|| task.getCommandClsId().matches(searchString)) {
+					|| task.getTaskCode().matches(searchString)) {
 				return true;
 			}
 			return false;
@@ -348,7 +348,7 @@ public class ExecutedTaskEditor extends EditorPart {
 			@Override
 			public String getText(Object element) {
 				if (element instanceof ExecutedTask) {
-					return Messages.getString(((ExecutedTask) element).getCommandClsId());
+					return Messages.getString(((ExecutedTask) element).getTaskCode());
 				}
 				return Messages.getString("UNTITLED");
 			}

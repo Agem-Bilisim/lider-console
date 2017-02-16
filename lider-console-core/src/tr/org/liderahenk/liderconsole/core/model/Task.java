@@ -34,7 +34,7 @@ public class Task implements Serializable {
 
 	private Plugin plugin;
 
-	private String commandClsId;
+	private String taskCode;
 
 	private Map<String, Object> parameterMap;
 
@@ -62,12 +62,12 @@ public class Task implements Serializable {
 		this.plugin = plugin;
 	}
 
-	public String getCommandClsId() {
-		return commandClsId;
+	public String getTaskCode() {
+		return taskCode;
 	}
 
-	public void setCommandClsId(String commandClsId) {
-		this.commandClsId = commandClsId;
+	public void setTaskCode(String taskCode) {
+		this.taskCode = taskCode;
 	}
 
 	public Map<String, Object> getParameterMap() {

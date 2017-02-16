@@ -88,7 +88,7 @@ public class TaskOverviewLabelProvider implements ILabelProvider {
 	public String getText(Object element) {
 		if (element instanceof Command) {
 			Command command = (Command) element;
-			return Messages.getString(command.getTask().getCommandClsId()) + " - " + command.getTask().getCreateDate();
+			return Messages.getString(command.getTask().getTaskCode()) + " - " + command.getTask().getCreateDate();
 		} else if (element instanceof CommandExecution) {
 			CommandExecution execution = (CommandExecution) element;
 			return execution.getDn().substring(0, 30);

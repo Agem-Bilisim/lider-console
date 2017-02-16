@@ -147,9 +147,9 @@ public abstract class DefaultTaskDialog extends TitleAreaDialog {
 
 	/**
 	 * 
-	 * @return command class ID
+	 * @return task code
 	 */
-	public abstract String getCommandId();
+	public abstract String getTaskCode();
 
 	/**
 	 * 
@@ -270,7 +270,7 @@ public abstract class DefaultTaskDialog extends TitleAreaDialog {
 						try {
 							progressBar.setVisible(true);
 							TaskRequest task = new TaskRequest(new ArrayList<String>(dnSet), DNType.AHENK,
-									getPluginName(), getPluginVersion(), getCommandId(), getParameterMap(), null,
+									getPluginName(), getPluginVersion(), getTaskCode(), getParameterMap(), null,
 									!hideActivationDate && btnEnableDate.getSelection()
 											? SWTResourceManager.convertDate(dtActivationDate, dtActivationDateTime)
 											: null,
@@ -314,7 +314,7 @@ public abstract class DefaultTaskDialog extends TitleAreaDialog {
 						try {
 							progressBar.setVisible(true);
 							TaskRequest task = new TaskRequest(new ArrayList<String>(dnSet), DNType.AHENK,
-									getPluginName(), getPluginVersion(), getCommandId(), getParameterMap(),
+									getPluginName(), getPluginVersion(), getTaskCode(), getParameterMap(),
 									dialog.getCronExpression(),
 									!hideActivationDate && btnEnableDate.getSelection()
 											? SWTResourceManager.convertDate(dtActivationDate, dtActivationDateTime)
