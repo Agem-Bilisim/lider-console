@@ -21,6 +21,7 @@ package tr.org.liderahenk.liderconsole.core.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
@@ -57,6 +58,8 @@ public class Plugin implements Serializable {
 	private boolean taskPlugin;
 
 	private boolean xBased;
+
+	private Map<String, String> displayNames;
 
 	private Date createDate;
 
@@ -140,6 +143,14 @@ public class Plugin implements Serializable {
 
 	public void setxBased(boolean xBased) {
 		this.xBased = xBased;
+	}
+
+	public Map<String, String> getDisplayNames() {
+		return displayNames;
+	}
+
+	public void setDisplayNames(Map<String, String> displayNames) {
+		this.displayNames = displayNames;
 	}
 
 	public Date getCreateDate() {

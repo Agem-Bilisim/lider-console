@@ -42,6 +42,8 @@ public class Task implements Serializable {
 
 	private String cronExpression;
 
+	private Map<String, String> displayNames;
+
 	private Date createDate;
 
 	private Date modifyDate;
@@ -92,6 +94,14 @@ public class Task implements Serializable {
 
 	public void setCronExpression(String cronExpression) {
 		this.cronExpression = cronExpression;
+	}
+
+	public Map<String, String> getDisplayNames() {
+		return displayNames;
+	}
+
+	public void setDisplayNames(Map<String, String> displayNames) {
+		this.displayNames = displayNames;
 	}
 
 	public Date getCreateDate() {

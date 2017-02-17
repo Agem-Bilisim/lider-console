@@ -67,4 +67,10 @@ public class Messages extends NLS {
 		return String.format(getString(key), args);
 	}
 
+	public static String getLanguage() {
+		String property = System.getProperty("nl");
+		String nl = RESOURCE_BUNDLE.getLocale() != null ? RESOURCE_BUNDLE.getLocale().getLanguage() : null;
+		return nl == null ? "tr" : nl;
+	}
+
 }

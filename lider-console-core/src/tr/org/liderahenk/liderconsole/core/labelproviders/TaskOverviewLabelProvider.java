@@ -21,6 +21,7 @@ package tr.org.liderahenk.liderconsole.core.labelproviders;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -88,7 +89,11 @@ public class TaskOverviewLabelProvider implements ILabelProvider {
 	public String getText(Object element) {
 		if (element instanceof Command) {
 			Command command = (Command) element;
-			return Messages.getString(command.getTask().getTaskCode()) + " - " + command.getTask().getCreateDate();
+			// Find related display name
+			Map<String, String> displayNames = command.getTask().getDisplayNames();
+			String displayName = displayNames != null ? displayNames.get(Messages.getLanguage())
+					: command.getTask().getTaskCode();
+			return displayName + " - " + command.getTask().getCreateDate();
 		} else if (element instanceof CommandExecution) {
 			CommandExecution execution = (CommandExecution) element;
 			return execution.getDn().substring(0, 30);
