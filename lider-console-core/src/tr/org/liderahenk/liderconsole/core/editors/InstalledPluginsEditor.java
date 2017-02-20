@@ -21,6 +21,7 @@ package tr.org.liderahenk.liderconsole.core.editors;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -180,7 +181,9 @@ public class InstalledPluginsEditor extends EditorPart {
 			@Override
 			public String getText(Object element) {
 				if (element instanceof Plugin) {
-					return Messages.getString(((Plugin) element).getName());
+					Map<String, String> displayNames = ((Plugin) element).getDisplayNames();
+					return displayNames != null ? displayNames.get(Messages.getLanguage())
+							: ((Plugin) element).getName();
 				}
 				return Messages.getString("UNTITLED");
 			}
@@ -221,7 +224,8 @@ public class InstalledPluginsEditor extends EditorPart {
 			@Override
 			public String getText(Object element) {
 				if (element instanceof Plugin) {
-					return ((Plugin) element).getCreateDate() != null ? SWTResourceManager.formatDate(((Plugin) element).getCreateDate())
+					return ((Plugin) element).getCreateDate() != null
+							? SWTResourceManager.formatDate(((Plugin) element).getCreateDate())
 							: Messages.getString("UNTITLED");
 				}
 				return Messages.getString("UNTITLED");
