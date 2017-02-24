@@ -19,9 +19,7 @@
 */
 package tr.org.liderahenk.liderconsole.core.widgets;
 
-import org.eclipse.jface.dialogs.IDialogLabelKeys;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -92,9 +90,7 @@ public class LiderConfirmBox extends MessageDialog {
 	public static boolean open(Shell parent, String title, String message, boolean passwordConfirmation) {
 		LiderConfirmBox confirm = new LiderConfirmBox(parent, title,
 				SWTResourceManager.getImage(LiderConstants.PLUGIN_IDS.LIDER_CONSOLE_CORE, "icons/32/warning.png"),
-				message, MessageDialog.QUESTION,
-				new String[] { JFaceResources.getString(IDialogLabelKeys.YES_LABEL_KEY),
-						JFaceResources.getString(IDialogLabelKeys.NO_LABEL_KEY) },
+				message, MessageDialog.QUESTION, new String[] { Messages.getString("YES"), Messages.getString("NO") },
 				SWT.NONE, passwordConfirmation);
 		boolean result = confirm.open() == 0;
 		if (result) {
