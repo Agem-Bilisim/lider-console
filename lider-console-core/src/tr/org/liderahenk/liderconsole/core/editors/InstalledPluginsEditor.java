@@ -182,7 +182,7 @@ public class InstalledPluginsEditor extends EditorPart {
 			public String getText(Object element) {
 				if (element instanceof Plugin) {
 					Map<String, String> displayNames = ((Plugin) element).getDisplayNames();
-					return displayNames != null ? displayNames.get(Messages.getLanguage())
+					return displayNames != null ? displayNames.get(Messages.getLocale())
 							: ((Plugin) element).getName();
 				}
 				return Messages.getString("UNTITLED");

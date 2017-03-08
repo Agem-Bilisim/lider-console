@@ -91,7 +91,7 @@ public class TaskOverviewLabelProvider implements ILabelProvider {
 			Command command = (Command) element;
 			// Find related display name
 			Map<String, String> displayNames = command.getTask().getDisplayNames();
-			String displayName = displayNames != null ? displayNames.get(Messages.getLanguage())
+			String displayName = displayNames != null ? displayNames.get(Messages.getLocale())
 					: command.getTask().getTaskCode();
 			return displayName + " - " + command.getTask().getCreateDate();
 		} else if (element instanceof CommandExecution) {

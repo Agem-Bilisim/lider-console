@@ -260,7 +260,7 @@ public class LdapConnectionListener implements IConnectionListener {
 			}
 
 			//
-			// Get XMPP & LDAP configuration from the server
+			// Get XMPP configuration from the server
 			//
 			IResponse response = null;
 			try {
@@ -293,6 +293,22 @@ public class LdapConnectionListener implements IConnectionListener {
 				}
 
 				openLdapSearchEditor();
+			}
+
+			//
+			// Get Lider configuration from the server
+			//
+			try {
+				response = RestClient.get(getConfigBaseUrl().append("/liderconf").toString(), false);
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+				Notifier.error(null, Messages.getString("CHECK_LIDER_STATUS_AND_REST_SERVICE"));
+				return;
+			}
+			if (response != null) {
+				Map<String, Object> config = response.getResultMap();
+				String locale = (String) config.get("locale");
+				Messages.setLocale(locale);
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

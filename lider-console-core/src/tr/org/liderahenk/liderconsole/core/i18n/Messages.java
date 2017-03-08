@@ -19,10 +19,18 @@
 */
 package tr.org.liderahenk.liderconsole.core.i18n;
 
+import java.util.Locale;
 import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.util.PropertyResourceBundle;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import tr.org.liderahenk.liderconsole.core.utils.LiderCoreUtils;
 
 /**
  * Provides i18n messages for Lider Console Core strings.
@@ -32,16 +40,32 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 
+	private static final Logger logger = LoggerFactory.getLogger(Messages.class);
+
 	private static final String BUNDLE_NAME = "tr.org.liderahenk.liderconsole.core.i18n.messages";
 
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
+	/**
+	 * Target locale is either read from command line arguments or 'tr' by
+	 * default. It can be overridden according to Lider locale
+	 */
+	private static Locale targetLocale = null;
+	static {
+		IPreferenceStore preferenceStore = PlatformUI.getPreferenceStore();
+		String locale = preferenceStore.getString("lider.locale");
+		if (LiderCoreUtils.isEmpty(locale)) {
+			locale = "tr";
+		}
+		targetLocale = locale.contains("-") || locale.contains("_") ? Locale.forLanguageTag(locale)
+				: new Locale(locale);
+		logger.info("Configuring locale: {}", locale);
+	}
 
 	private Messages() {
 	}
 
 	public static String getString(String key) {
 		try {
-			return RESOURCE_BUNDLE.getString(key);
+			return PropertyResourceBundle.getBundle(BUNDLE_NAME, targetLocale).getString(key);
 		} catch (MissingResourceException e) {
 			return '!' + key + '!';
 		}
@@ -67,10 +91,32 @@ public class Messages extends NLS {
 		return String.format(getString(key), args);
 	}
 
-	public static String getLanguage() {
-		String property = System.getProperty("nl");
-		String nl = RESOURCE_BUNDLE.getLocale() != null ? RESOURCE_BUNDLE.getLocale().getLanguage() : null;
-		return nl == null ? "tr" : nl;
+	public static void setLocale(final String locale) {
+		if (locale == null) {
+			throw new NullPointerException();
+		}
+		if (!locale.contains(targetLocale.getLanguage())) {
+			targetLocale = locale.contains("-") || locale.contains("_") ? Locale.forLanguageTag(locale)
+					: new Locale(locale);
+			PlatformUI.getPreferenceStore().setValue("lider.locale", locale);
+			logger.info("Setting new locale: {}", locale);
+			Display.getDefault().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					// Re-launch with the new locale
+					PlatformUI.getWorkbench().restart();
+				}
+			});
+		}
+		try {
+			// Try to set locale as default
+			Locale.setDefault(targetLocale);
+		} catch (Exception e) {
+		}
+	}
+
+	public static String getLocale() {
+		return PlatformUI.getPreferenceStore().getString("lider.locale");
 	}
 
 }
