@@ -2,6 +2,7 @@ language: java
 jdk:
  - oraclejdk8
 sudo: false
+before_install: echo "MAVEN_OPTS='-Xmx2048m -XX:MaxPermSize=512m'" > ~/.mavenrc
 install: true
 script: ./scripts/build-lider-console.sh
 notifications:
@@ -11,3 +12,4 @@ notifications:
       - cemre.alpsoy@agem.com.tr
       - volkan.sahin@agem.com.tr
       - caner.feyzullahoglu@agem.com.tr
+  slack: liderahenk:I9gzRs8J3QEG6rHChgjGODVp
