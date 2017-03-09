@@ -333,7 +333,7 @@ public class ExecutedTaskEditor extends EditorPart {
 			@Override
 			public String getText(Object element) {
 				if (element instanceof ExecutedTask) {
-					return Messages.getString(((ExecutedTask) element).getPluginName()) + " - "
+					return ((ExecutedTask) element).getPluginDisplayNames().get(Messages.getLocale()) + " - "
 							+ ((ExecutedTask) element).getPluginVersion();
 				}
 				return Messages.getString("UNTITLED");
@@ -348,7 +348,7 @@ public class ExecutedTaskEditor extends EditorPart {
 			@Override
 			public String getText(Object element) {
 				if (element instanceof ExecutedTask) {
-					return Messages.getString(((ExecutedTask) element).getTaskCode());
+					return ((ExecutedTask) element).getTaskCodeDisplayNames().get(Messages.getLocale());
 				}
 				return Messages.getString("UNTITLED");
 			}

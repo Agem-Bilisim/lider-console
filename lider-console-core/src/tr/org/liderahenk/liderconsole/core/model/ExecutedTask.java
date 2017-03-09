@@ -21,6 +21,7 @@ package tr.org.liderahenk.liderconsole.core.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
@@ -40,9 +41,13 @@ public class ExecutedTask implements Serializable {
 
 	private String pluginName;
 
+	private Map<String, String> pluginDisplayNames;
+
 	private String pluginVersion;
 
 	private String taskCode;
+
+	private Map<String, String> taskCodeDisplayNames;
 
 	private Date createDate;
 
@@ -72,6 +77,14 @@ public class ExecutedTask implements Serializable {
 		this.pluginName = pluginName;
 	}
 
+	public Map<String, String> getPluginDisplayNames() {
+		return pluginDisplayNames;
+	}
+
+	public void setPluginDisplayNames(Map<String, String> pluginDisplayNames) {
+		this.pluginDisplayNames = pluginDisplayNames;
+	}
+
 	public String getPluginVersion() {
 		return pluginVersion;
 	}
@@ -86,6 +99,14 @@ public class ExecutedTask implements Serializable {
 
 	public void setTaskCode(String taskCode) {
 		this.taskCode = taskCode;
+	}
+
+	public Map<String, String> getTaskCodeDisplayNames() {
+		return taskCodeDisplayNames;
+	}
+
+	public void setTaskCodeDisplayNames(Map<String, String> taskCodeDisplayNames) {
+		this.taskCodeDisplayNames = taskCodeDisplayNames;
 	}
 
 	public Date getCreateDate() {
