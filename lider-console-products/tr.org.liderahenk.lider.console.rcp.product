@@ -24,7 +24,7 @@ Apache Software Foundation http://apache.org/
    <launcherArgs>
       <programArgs>-nl tr --launcher.GTK_version 2
       </programArgs>
-      <vmArgs>-Dosgi.requiredJavaVersion=1.7 -XX:MaxPermSize=512m -Xms40m -Xmx1024m
+      <vmArgs>-Dosgi.requiredJavaVersion=1.7 -Xms512m -Xmx2048m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+UseParallelGC
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
