@@ -1054,6 +1054,10 @@ Public License instead of this License.  But first, please read
       <property name="eclipse.log.level" value="INFO" />
    </configurations>
 
+   <repositories>
+      <repository location="http://download.agem.com.tr/lider-console/1.0.0" enabled="true" />
+   </repositories>
+
    <preferencesInfo>
       <targetfile overwrite="false"/>
    </preferencesInfo>

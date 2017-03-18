@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="Lider Arayüz (Console) Güncelleme" url="http://download.agem.com.tr/lider-console/updates">
+      Lider Arayüz (Console) Güncelleme URL&apos;i - Tüm eklentiler ve çekirdek bileşenlerin güncel sürümlerinin içermektedir.
+   </description>
+   <feature url="features/lider-console-backup-feature_1.0.0.jar" id="lider-console-backup-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-antivirus-feature_1.0.0.jar" id="lider-console-antivirus-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-bios-updater-feature_1.0.0.jar" id="lider-console-bios-updater-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-browser-feature_1.0.0.jar" id="lider-console-browser-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-conky-feature_1.0.0.jar" id="lider-console-conky-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-disk-quota-feature_1.0.0.jar" id="lider-console-disk-quota-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-firewall-feature_1.0.0.jar" id="lider-console-firewall-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-local-user-feature_1.0.0.jar" id="lider-console-local-user-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-login-manager-feature_1.0.0.jar" id="lider-console-login-manager-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-network-inventory-feature_1.0.0.jar" id="lider-console-network-inventory-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-network-manager-feature_1.0.0.jar" id="lider-console-network-manager-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-package-manager-feature_1.0.0.jar" id="lider-console-package-manager-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-password-feature_1.0.0.jar" id="lider-console-password-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-remote-access-feature_1.0.0.jar" id="lider-console-remote-access-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-resource-usage-feature_1.0.0.jar" id="lider-console-resource-usage-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-rsyslog-feature_1.0.0.jar" id="lider-console-rsyslog-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-screensaver-feature_1.0.0.jar" id="lider-console-screensaver-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-screenshot-feature_1.0.0.jar" id="lider-console-screenshot-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-script-feature_1.0.0.jar" id="lider-console-script-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-service-feature_1.0.0.jar" id="lider-console-service-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-usb-feature_1.0.0.jar" id="lider-console-usb-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-user-privilege-feature_1.0.0.jar" id="lider-console-user-privilege-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <feature url="features/lider-console-wol-feature_1.0.0.jar" id="lider-console-wol-feature" version="1.0.0">
+      <category name="tr.org.liderahenk.update.site.console.plugins"/>
+   </feature>
+   <bundle id="tr.org.liderahenk.liderconsole.core" version="1.0.0.qualifier">
+      <category name="tr.org.liderahenk.update.site.console.core"/>
+   </bundle>
+   <bundle id="tr.org.liderahenk.liderconsole.rcp" version="1.0.0.qualifier">
+      <category name="tr.org.liderahenk.update.site.console.core"/>
+   </bundle>
+   <category-def name="tr.org.liderahenk.update.site.console.plugins" label="Lider Arayüz (Console) Eklentileri">
+      <description>
+         Lider Arayüz (Console) eklenti bileşenlerini içerir.
+      </description>
+   </category-def>
+   <category-def name="tr.org.liderahenk.update.site.console.core" label="Lider Arayüz (Console) Çekirdek">
+      <description>
+         Lider Arayüz (Console) çekirdek bileşenlerini içerir.
+      </description>
+   </category-def>
+</site>

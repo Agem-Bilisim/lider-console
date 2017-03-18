@@ -214,6 +214,7 @@
 		<module>lider-console-core</module>
 		<module>lider-console-rcp</module>
 		<module>lider-console-products</module>
+		<module>lider-console-update-site</module>
 		<module>lider-console-core-tests</module>
 		<module>language-packs/common.core</module>
 		<module>language-packs/common.ui</module>
