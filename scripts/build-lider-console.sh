@@ -42,6 +42,7 @@ echo "Export path: $EXPORT_PATH"
 echo "Copying exported lider-console products to $EXPORT_PATH..."
 mkdir -p "$EXPORT_PATH"
 cp -rf "$PRJ_ROOT_PATH"/lider-console-products/target/products/. "$EXPORT_PATH"
+cp -rf "$PRJ_ROOT_PATH"/lider-console-update-site/target/*.zip "$EXPORT_PATH"
 echo "Copied exported lider-console products."
 
 echo "Built finished successfully!"
