@@ -13,6 +13,7 @@
 
 	<artifactId>tr.org.liderahenk.update.site</artifactId>
 	<packaging>eclipse-repository</packaging>
+	<version>1.0.0</version>
 
 	<properties>
 		<!-- needed for checkstyle/findbugs -->
