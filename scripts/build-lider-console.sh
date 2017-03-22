@@ -27,7 +27,7 @@ echo "Started server."
 # Build project
 echo "Building lider-console project..."
 cd "$PRJ_ROOT_PATH"
-mvn clean install -DskipTests
+mvn -pl '!lider-console-update-site' clean install -DskipTests
 echo "lider-console project built successfully."
 
 # After exporting products, kill jetty server process
@@ -42,7 +42,6 @@ echo "Export path: $EXPORT_PATH"
 echo "Copying exported lider-console products to $EXPORT_PATH..."
 mkdir -p "$EXPORT_PATH"
 cp -rf "$PRJ_ROOT_PATH"/lider-console-products/target/products/. "$EXPORT_PATH"
-cp -rf "$PRJ_ROOT_PATH"/lider-console-update-site/target/*.zip "$EXPORT_PATH"
 echo "Copied exported lider-console products."
 
 echo "Built finished successfully!"
