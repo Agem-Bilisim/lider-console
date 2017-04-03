@@ -17,8 +17,8 @@ set -o pipefail # for a pipeline, if any of the commands fail with a non-zero ex
 # Common variables
 #
 # You need to generate 'personal access token' with 'repo' scope.
-USERNAME="emrekgn"
-PERSONAL_ACCESS_TOKEN="d3d55423f683681326133dd2ce717ea5f4a202fd"
+USERNAME=YOUR_USER_NAME
+PERSONAL_ACCESS_TOKEN=YOUR_TOKEN
 NAMESPACE="Agem-Bilisim"
 BASE_PATH="https://api.github.com/"
 PROJECT_SELECTION="select( .name | contains(\"lider-ahenk-\") )"
