@@ -5,6 +5,10 @@ sudo: false
 before_install: echo "MAVEN_OPTS='-Xmx2048m -XX:MaxPermSize=512m'" > ~/.mavenrc
 install: true
 script: ./scripts/build-lider-console.sh
+branches:
+  only:
+  - master
+  - production
 notifications:
   email:
     recipients:
