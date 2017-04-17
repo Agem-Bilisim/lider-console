@@ -31,7 +31,7 @@ REPO_NAME="lider-console-repo"
 #
 # Remove on error
 #
-#trap "{ rm -rf $CLONE_PATH; }" EXIT
+trap "{ rm -rf $CLONE_PATH; }" EXIT
 
 #
 # Install dependencies if necessary & create directory
@@ -45,7 +45,7 @@ mkdir -p "$CLONE_PATH"
 # Clone (or update) lider-console
 #
 GIT_URL=$(echo "$LIDER_CONSOLE_CLONE_URL" | sed -E "s/https:\/\//https:\/\/$PERSONAL_ACCESS_TOKEN@/g")
-if [ ! -d "$CLONE_PATH"lider ]; then
+if [ ! -d "$CLONE_PATH"lider-console ]; then
 	echo "Cloning lider-console ( $GIT_URL )"
 	cd "$CLONE_PATH" && git clone "$GIT_URL" --quiet
 else
