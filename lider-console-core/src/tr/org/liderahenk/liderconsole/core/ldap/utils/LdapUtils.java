@@ -23,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -32,8 +33,10 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
@@ -56,7 +59,9 @@ import org.slf4j.LoggerFactory;
 
 import tr.org.liderahenk.liderconsole.core.config.ConfigProvider;
 import tr.org.liderahenk.liderconsole.core.constants.LiderConstants;
+import tr.org.liderahenk.liderconsole.core.ldap.enums.DNType;
 import tr.org.liderahenk.liderconsole.core.ldap.listeners.LdapConnectionListener;
+import tr.org.liderahenk.liderconsole.core.ldap.model.LdapEntry;
 import tr.org.liderahenk.liderconsole.core.model.LiderPrivilege;
 
 /**
@@ -598,6 +603,53 @@ public class LdapUtils {
 	public List<String> findUsers(String dn) {
 		return findUsers(dn, LdapConnectionListener.getConnection(), LdapConnectionListener.getMonitor());
 	}
+	
+	public List<LdapEntry> findUsers(String dn, String[] returningAttributes, Connection conn, StudioProgressMonitor monitor) {
+		
+		// Create filter expression for user object classes
+		StringBuilder filter = new StringBuilder();
+		String[] userObjClsArr = ConfigProvider.getInstance().getStringArr(LiderConstants.CONFIG.USER_LDAP_OBJ_CLS);
+		if (userObjClsArr.length > 1) {
+			filter.append("(&");
+		}
+		for (String agentObjCls : userObjClsArr) {
+			filter.append("(objectClass=").append(agentObjCls).append(")");
+		}
+		if (userObjClsArr.length > 1) {
+			filter.append(")");
+		}
+		
+		List<LdapEntry> ldapEntryList = new ArrayList<LdapEntry>();
+
+		StudioNamingEnumeration enumeration = search(dn, filter.toString(), returningAttributes,
+				SearchControls.SUBTREE_SCOPE, 0, conn, monitor);
+		if (enumeration != null) {
+			try {
+				// Iterate over search items
+				while (enumeration.hasMore()) {
+					SearchResult item = enumeration.next();
+					Attributes attributes = item.getAttributes();
+					NamingEnumeration<? extends Attribute> attributesEnumeration = attributes.getAll();
+					Map<String, String> attributeMap = new HashMap<String, String>();
+					// Iterate over attributes (e.g. uid) of all search items
+					while (attributesEnumeration.hasMore()) {
+						Attribute attribute = attributesEnumeration.next();
+						attributeMap.put(attribute.getID(), attribute.get().toString());
+					} 
+					LdapEntry ldapEntry = new LdapEntry(item.getName(), attributeMap, DNType.USER);
+					ldapEntryList.add(ldapEntry);
+				}
+			} catch (NamingException e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+
+		return ldapEntryList;
+	}
+	
+	public List<LdapEntry> findUsers(String dn, String[] returningAttributes) {
+		return findUsers(dn, returningAttributes, LdapConnectionListener.getConnection(), LdapConnectionListener.getMonitor());
+	}
 
 	/**
 	 * Tries to find agent DNs under the provided DN
@@ -829,7 +881,7 @@ public class LdapUtils {
 		}
 		return liderPrivilege;
 	}
-
+	
 	public void destroy() {
 		if (uidMap != null) {
 			uidMap.clear();
