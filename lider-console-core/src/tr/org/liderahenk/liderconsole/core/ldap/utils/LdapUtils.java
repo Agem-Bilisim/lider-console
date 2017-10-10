@@ -381,6 +381,11 @@ public class LdapUtils {
 		return findAttributeValue(attribute);
 	}
 
+	public String findAttributeValueByDn(String dn, String attrName) {
+		Attribute attribute = this.findAttributeByDn(dn, attrName, LdapConnectionListener.getConnection(), LdapConnectionListener.getMonitor());
+		return findAttributeValue(attribute);
+	}
+
 	/**
 	 * 
 	 * @param attribute
