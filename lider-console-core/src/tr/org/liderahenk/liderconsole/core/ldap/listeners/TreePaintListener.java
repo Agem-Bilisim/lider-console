@@ -22,6 +22,7 @@ package tr.org.liderahenk.liderconsole.core.ldap.listeners;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.directory.api.ldap.model.schema.ObjectClass;
 import org.apache.directory.studio.ldapbrowser.core.model.IBookmark;
@@ -40,6 +41,8 @@ import org.slf4j.LoggerFactory;
 
 import tr.org.liderahenk.liderconsole.core.current.UserSettings;
 import tr.org.liderahenk.liderconsole.core.ldap.utils.LdapUtils;
+import tr.org.liderahenk.liderconsole.core.model.Agent;
+import tr.org.liderahenk.liderconsole.core.model.AgentProperty;
 
 /**
  * This class is used to paint online/offline status images on LDAP tree while
@@ -61,8 +64,9 @@ public class TreePaintListener implements Listener {
 	private final Image offlineImage;
 	private final Image onlineImage;
 	private final Image agentImage;
+	private final Image winAgentImage;
 	private final Image userImage;
-
+	
 	public static synchronized TreePaintListener getInstance() {
 		if (instance == null) {
 			instance = new TreePaintListener();
@@ -77,6 +81,8 @@ public class TreePaintListener implements Listener {
 				this.getClass().getClassLoader().getResourceAsStream("icons/32/online-mini.png"));
 		agentImage = new Image(Display.getDefault(),
 				this.getClass().getClassLoader().getResourceAsStream("icons/16/computer.png"));
+		winAgentImage = new Image(Display.getDefault(),
+				this.getClass().getClassLoader().getResourceAsStream("icons/16/win.png"));
 		userImage = new Image(Display.getDefault(),
 				this.getClass().getClassLoader().getResourceAsStream("icons/16/user.png"));
 		presenceMap = new Hashtable<String, Boolean>();
@@ -110,7 +116,7 @@ public class TreePaintListener implements Listener {
 	}
 
 	@Override
-	public void handleEvent(Event event) {
+	public synchronized void handleEvent(Event event) {
 
 		switch (event.type) {
 		case SWT.MeasureItem: {
@@ -137,7 +143,8 @@ public class TreePaintListener implements Listener {
 			if (originalImage != agentImage && originalImage != userImage && data instanceof IEntry) {
 				Collection<ObjectClass> classes = ((IEntry) data).getObjectClassDescriptions();
 				if (LdapUtils.getInstance().isAgent(classes)) {
-					item.setImage(agentImage);
+					Agent agent = LdapConnectionListener.getAgentDnMap().get(((IEntry) data).getDn().getName());
+					item.setImage(isWindows(agent) ? winAgentImage : agentImage);
 					originalImage = item.getImage();
 				} else if (LdapUtils.getInstance().isUser(classes)) {
 					item.setImage(userImage);
@@ -181,6 +188,20 @@ public class TreePaintListener implements Listener {
 		}
 		}
 
+	}
+
+	private boolean isWindows(Agent agent) {
+		if (agent != null) {
+			Set<AgentProperty> properties = agent.getProperties();
+			if (properties != null) {
+				for(AgentProperty prop : properties) {
+					if ("os.name".equals(prop.getPropertyName()) && "Windows".equalsIgnoreCase(prop.getPropertyValue())) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	/**

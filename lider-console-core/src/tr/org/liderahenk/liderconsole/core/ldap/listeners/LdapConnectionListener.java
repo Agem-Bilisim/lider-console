@@ -19,6 +19,8 @@
 */
 package tr.org.liderahenk.liderconsole.core.ldap.listeners;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.naming.directory.Attribute;
@@ -58,8 +60,10 @@ import tr.org.liderahenk.liderconsole.core.current.UserSettings;
 import tr.org.liderahenk.liderconsole.core.editorinput.DefaultEditorInput;
 import tr.org.liderahenk.liderconsole.core.i18n.Messages;
 import tr.org.liderahenk.liderconsole.core.ldap.utils.LdapUtils;
+import tr.org.liderahenk.liderconsole.core.model.Agent;
 import tr.org.liderahenk.liderconsole.core.rest.RestClient;
 import tr.org.liderahenk.liderconsole.core.rest.responses.IResponse;
+import tr.org.liderahenk.liderconsole.core.rest.utils.AgentRestUtils;
 import tr.org.liderahenk.liderconsole.core.utils.LiderCoreUtils;
 import tr.org.liderahenk.liderconsole.core.widgets.Notifier;
 import tr.org.liderahenk.liderconsole.core.xmpp.XMPPClient;
@@ -78,6 +82,7 @@ public class LdapConnectionListener implements IConnectionListener {
 
 	private static Connection conn;
 	private static StudioProgressMonitor monitor;
+	private static HashMap<String, Agent> agentDnMap = new HashMap<String, Agent>();
 
 	public LdapConnectionListener() {
 
@@ -157,6 +162,7 @@ public class LdapConnectionListener implements IConnectionListener {
 		XMPPClient.getInstance().disconnect();
 		RestSettings.setServerUrl(null);
 		UserSettings.reset();
+		agentDnMap.clear();
 		eventBroker.send("check_lider_status", null);
 		LdapConnectionListener.conn = null;
 		if (monitor != null) {
@@ -310,6 +316,23 @@ public class LdapConnectionListener implements IConnectionListener {
 				String locale = (String) config.get("locale");
 				Messages.setLocale(locale);
 			}
+
+			//
+			// Initialize agent DN map
+			//
+			try {
+				List<Agent> agents = AgentRestUtils.list(null, null, null);
+				if (agents != null) {
+					for (Agent agent : agents) {
+						agentDnMap.put(agent.getDn(), agent);
+					}
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+				Notifier.error(null, Messages.getString("CHECK_LIDER_STATUS_AND_REST_SERVICE"));
+				return;
+			}
+
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -377,6 +400,10 @@ public class LdapConnectionListener implements IConnectionListener {
 		StringBuilder url = new StringBuilder(
 				ConfigProvider.getInstance().get(LiderConstants.CONFIG.REST_CONFIG_BASE_URL));
 		return url;
+	}
+
+	public static HashMap<String, Agent> getAgentDnMap() {
+		return agentDnMap;
 	}
 
 }
