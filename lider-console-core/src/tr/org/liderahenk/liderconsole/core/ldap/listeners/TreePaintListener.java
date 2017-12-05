@@ -66,7 +66,7 @@ public class TreePaintListener implements Listener {
 	private final Image agentImage;
 	private final Image winAgentImage;
 	private final Image userImage;
-	
+
 	public static synchronized TreePaintListener getInstance() {
 		if (instance == null) {
 			instance = new TreePaintListener();
@@ -143,7 +143,8 @@ public class TreePaintListener implements Listener {
 			if (originalImage != agentImage && originalImage != userImage && data instanceof IEntry) {
 				Collection<ObjectClass> classes = ((IEntry) data).getObjectClassDescriptions();
 				if (LdapUtils.getInstance().isAgent(classes)) {
-					Agent agent = LdapConnectionListener.getAgentDnMap().get(((IEntry) data).getDn().getName());
+					String uid = LdapConnectionListener.getDnUidMap().get(((IEntry) data).getDn().getName());
+					Agent agent = uid != null ? LdapConnectionListener.getUidAgentMap().get(uid) : null;
 					item.setImage(isWindows(agent) ? winAgentImage : agentImage);
 					originalImage = item.getImage();
 				} else if (LdapUtils.getInstance().isUser(classes)) {
@@ -194,8 +195,9 @@ public class TreePaintListener implements Listener {
 		if (agent != null) {
 			Set<AgentProperty> properties = agent.getProperties();
 			if (properties != null) {
-				for(AgentProperty prop : properties) {
-					if ("os.name".equals(prop.getPropertyName()) && "Windows".equalsIgnoreCase(prop.getPropertyValue())) {
+				for (AgentProperty prop : properties) {
+					if ("os.name".equals(prop.getPropertyName())
+							&& "Windows".equalsIgnoreCase(prop.getPropertyValue())) {
 						return true;
 					}
 				}

@@ -82,7 +82,8 @@ public class LdapConnectionListener implements IConnectionListener {
 
 	private static Connection conn;
 	private static StudioProgressMonitor monitor;
-	private static HashMap<String, Agent> agentDnMap = new HashMap<String, Agent>();
+	private static HashMap<String, Agent> uidAgentMap = new HashMap<String, Agent>();
+	private static HashMap<String, String> dnUidMap = new HashMap<String, String>();
 
 	public LdapConnectionListener() {
 
@@ -162,7 +163,8 @@ public class LdapConnectionListener implements IConnectionListener {
 		XMPPClient.getInstance().disconnect();
 		RestSettings.setServerUrl(null);
 		UserSettings.reset();
-		agentDnMap.clear();
+		uidAgentMap.clear();
+		dnUidMap.clear();
 		eventBroker.send("check_lider_status", null);
 		LdapConnectionListener.conn = null;
 		if (monitor != null) {
@@ -324,7 +326,9 @@ public class LdapConnectionListener implements IConnectionListener {
 				List<Agent> agents = AgentRestUtils.list(null, null, null);
 				if (agents != null) {
 					for (Agent agent : agents) {
-						agentDnMap.put(agent.getDn(), agent);
+						uidAgentMap.put(agent.getJid(), agent);
+						String dn = LdapUtils.getInstance().findDnByUid(agent.getJid(), conn, mon);
+						dnUidMap.put(dn, agent.getJid());
 					}
 				}
 			} catch (Exception e) {
@@ -402,8 +406,12 @@ public class LdapConnectionListener implements IConnectionListener {
 		return url;
 	}
 
-	public static HashMap<String, Agent> getAgentDnMap() {
-		return agentDnMap;
+	public static HashMap<String, Agent> getUidAgentMap() {
+		return uidAgentMap;
+	}
+
+	public static HashMap<String, String> getDnUidMap() {
+		return dnUidMap;
 	}
 
 }
