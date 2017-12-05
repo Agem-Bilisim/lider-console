@@ -19,9 +19,11 @@
 */
 package tr.org.liderahenk.liderconsole.core.ldap.listeners;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.naming.directory.Attribute;
 import javax.naming.directory.SearchControls;
@@ -61,6 +63,7 @@ import tr.org.liderahenk.liderconsole.core.editorinput.DefaultEditorInput;
 import tr.org.liderahenk.liderconsole.core.i18n.Messages;
 import tr.org.liderahenk.liderconsole.core.ldap.utils.LdapUtils;
 import tr.org.liderahenk.liderconsole.core.model.Agent;
+import tr.org.liderahenk.liderconsole.core.model.AgentProperty;
 import tr.org.liderahenk.liderconsole.core.rest.RestClient;
 import tr.org.liderahenk.liderconsole.core.rest.responses.IResponse;
 import tr.org.liderahenk.liderconsole.core.rest.utils.AgentRestUtils;
@@ -84,6 +87,7 @@ public class LdapConnectionListener implements IConnectionListener {
 	private static StudioProgressMonitor monitor;
 	private static HashMap<String, Agent> uidAgentMap = new HashMap<String, Agent>();
 	private static HashMap<String, String> dnUidMap = new HashMap<String, String>();
+	private static ArrayList<String> winUidList = new ArrayList<String>();
 
 	public LdapConnectionListener() {
 
@@ -165,6 +169,7 @@ public class LdapConnectionListener implements IConnectionListener {
 		UserSettings.reset();
 		uidAgentMap.clear();
 		dnUidMap.clear();
+		winUidList.clear();
 		eventBroker.send("check_lider_status", null);
 		LdapConnectionListener.conn = null;
 		if (monitor != null) {
@@ -329,6 +334,9 @@ public class LdapConnectionListener implements IConnectionListener {
 						uidAgentMap.put(agent.getJid(), agent);
 						String dn = LdapUtils.getInstance().findDnByUid(agent.getJid(), conn, mon);
 						dnUidMap.put(dn, agent.getJid());
+						if (isWindows(agent)) {
+							winUidList.add(agent.getJid());
+						}
 					}
 				}
 			} catch (Exception e) {
@@ -405,6 +413,21 @@ public class LdapConnectionListener implements IConnectionListener {
 				ConfigProvider.getInstance().get(LiderConstants.CONFIG.REST_CONFIG_BASE_URL));
 		return url;
 	}
+	
+	private boolean isWindows(Agent agent) {
+		if (agent != null) {
+			Set<AgentProperty> properties = agent.getProperties();
+			if (properties != null) {
+				for (AgentProperty prop : properties) {
+					if ("os.name".equals(prop.getPropertyName())
+							&& "Windows".equalsIgnoreCase(prop.getPropertyValue())) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
 
 	public static HashMap<String, Agent> getUidAgentMap() {
 		return uidAgentMap;
@@ -412,6 +435,10 @@ public class LdapConnectionListener implements IConnectionListener {
 
 	public static HashMap<String, String> getDnUidMap() {
 		return dnUidMap;
+	}
+
+	public static ArrayList<String> getWinUidList() {
+		return winUidList;
 	}
 
 }
