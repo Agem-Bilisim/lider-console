@@ -116,7 +116,8 @@ public class Messages extends NLS {
 	}
 
 	public static String getLocale() {
-		return PlatformUI.getPreferenceStore().getString("lider.locale");
+		return "tr";
+//		return PlatformUI.getPreferenceStore().getString("lider.locale");
 	}
 
 }
